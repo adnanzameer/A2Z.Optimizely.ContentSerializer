@@ -1,5 +1,5 @@
 ﻿using A2Z.Optimizely.ContentSerializer.Internal;
-using A2Z.Optimizely.ContentSerializer.Tests.Pages;
+using A2Z.Optimizely.ContentSerializer.Tests.MockContent;
 using Shouldly;
 using Xunit;
 

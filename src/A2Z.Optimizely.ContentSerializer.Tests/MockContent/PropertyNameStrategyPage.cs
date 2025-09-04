@@ -1,7 +1,7 @@
 ﻿using EPiServer.Core;
 using A2Z.Optimizely.ContentSerializer.Attributes;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.Pages
+namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent
 {
     public class PropertyNameStrategyPage : PageData
     {

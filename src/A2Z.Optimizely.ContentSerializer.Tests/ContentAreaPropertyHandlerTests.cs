@@ -1,7 +1,7 @@
 ﻿using EPiServer;
 using EPiServer.Core;
 using A2Z.Optimizely.ContentSerializer.Internal.Default;
-using A2Z.Optimizely.ContentSerializer.Tests.Pages;
+using A2Z.Optimizely.ContentSerializer.Tests.MockContent;
 using NSubstitute;
 using Shouldly;
 using Xunit;

@@ -4,7 +4,6 @@ using EPiServer.Core;
 using EPiServer.Shell.ObjectEditing;
 using A2Z.Optimizely.ContentSerializer.Internal;
 using A2Z.Optimizely.ContentSerializer.Internal.Default;
-using A2Z.Optimizely.ContentSerializer.Tests.Pages;
 
 namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent.SelectStrategies
 {

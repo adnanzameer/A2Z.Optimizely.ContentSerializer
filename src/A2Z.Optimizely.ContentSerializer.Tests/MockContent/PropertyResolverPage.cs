@@ -3,7 +3,7 @@ using EPiServer.Core;
 using EPiServer.DataAnnotations;
 using A2Z.Optimizely.ContentSerializer.Attributes;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.Pages
+namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent
 {
     public class PropertyResolverPage : PageData
     {

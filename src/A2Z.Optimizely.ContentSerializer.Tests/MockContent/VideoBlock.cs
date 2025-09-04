@@ -4,7 +4,7 @@ using EPiServer.Core;
 using EPiServer.DataAbstraction;
 using EPiServer.DataAnnotations;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.Pages
+namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent
 {
     [ContentType(DisplayName = "VideoBlock", GUID = "f4a40b95-798e-4400-ac79-7f3a4189d5c7", Description = "")]
     public class VideoBlock : BlockData

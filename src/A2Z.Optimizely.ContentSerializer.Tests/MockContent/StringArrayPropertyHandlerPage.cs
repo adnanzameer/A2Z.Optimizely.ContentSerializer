@@ -3,7 +3,7 @@ using EPiServer.Core;
 using EPiServer.DataAbstraction;
 using EPiServer.DataAnnotations;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.Pages
+namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent
 {
     [ContentType(DisplayName = "StringArrayPropertyHandlerPage", GUID = "414a734c-0fdf-49a5-9fc4-04d10538baa5", Description = "")]
     public class StringArrayPropertyHandlerPage : PageData

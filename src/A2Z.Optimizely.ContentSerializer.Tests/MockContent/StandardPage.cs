@@ -3,7 +3,7 @@ using EPiServer.Core;
 using EPiServer.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.Pages
+namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent
 {
     [ContentType(DisplayName = "StandardPage", GUID = "e48d76d2-016c-4588-9768-f68caf3a9b43", Description = "")]
     public class StandardPage : PageData

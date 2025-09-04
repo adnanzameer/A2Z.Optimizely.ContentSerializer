@@ -3,7 +3,7 @@ using EPiServer.Core;
 using EPiServer.DataAbstraction;
 using EPiServer.DataAnnotations;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.Pages
+namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent
 {
     [ContentType(DisplayName = "ValueTypePropertyHandlerPage", GUID = "91b9fea0-c87e-482d-937b-0cbd5455f296", Description = "")]
     public class ValueTypePropertyHandlerPage : PageData

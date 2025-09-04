@@ -1,7 +1,7 @@
 ﻿using A2Z.Optimizely.ContentSerializer.Internal;
 using A2Z.Optimizely.ContentSerializer.Internal.Default;
+using A2Z.Optimizely.ContentSerializer.Tests.MockContent;
 using A2Z.Optimizely.ContentSerializer.Tests.MockContent.SelectStrategies;
-using A2Z.Optimizely.ContentSerializer.Tests.Pages;
 using Shouldly;
 using Xunit;
 

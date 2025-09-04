@@ -5,11 +5,11 @@ using A2Z.Optimizely.ContentSerializer.Internal;
 using A2Z.Optimizely.ContentSerializer.Internal.Default;
 using A2Z.Optimizely.ContentSerializer.Internal.Default.ValueListPropertyHandlers;
 using A2Z.Optimizely.ContentSerializer.Internal.Default.ValueTypePropertyHandlers;
-using A2Z.Optimizely.ContentSerializer.Tests.Pages;
 using NSubstitute;
 using Shouldly;
 using Xunit;
 using StringPropertyHandler = A2Z.Optimizely.ContentSerializer.Internal.Default.StringPropertyHandler;
+using A2Z.Optimizely.ContentSerializer.Tests.MockContent;
 
 namespace A2Z.Optimizely.ContentSerializer.Tests
 {

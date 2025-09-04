@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using EPiServer.Core;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.Pages
+namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent
 {
     public class StandardPageBuilder
     {
