@@ -144,7 +144,7 @@ context.Services.AddSingleton<IPropertyHandler<string>, JosefStringPropertyHandl
 
 ### Breaking changes
 
-#### Version 5.0
+#### Version 5.0 (last update on [JOS.ContentSerializer](https://github.com/joseftw/JOS.ContentSerializer) by *Josef Ottosson*. )
 To fix the issue with IContentSerializerSettings not getting passed on to ```IPropertyHandlers``` I needed to do a breaking change.
 I've added the following method to the ```IPropertyHandler``` interface:
 ```csharp
