@@ -3,35 +3,34 @@ using A2Z.Optimizely.ContentSerializer.Tests.MockContent;
 using Shouldly;
 using Xunit;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests
+namespace A2Z.Optimizely.ContentSerializer.Tests;
+
+public class PropertyNameStrategyTests
 {
-    public class PropertyNameStrategyTests
+    private readonly PropertyNameStrategy _sut;
+
+    public PropertyNameStrategyTests()
     {
-        private readonly PropertyNameStrategy _sut;
+        _sut = new PropertyNameStrategy();
+    }
 
-        public PropertyNameStrategyTests()
-        {
-            this._sut = new PropertyNameStrategy();
-        }
+    [Fact]
+    public void GivenNoContentSerializerNameAttribute_WhenGetPropertyName_ThenReturnsDeclaredName()
+    {
+        var page = new PropertyNameStrategyPage();
 
-        [Fact]
-        public void GivenNoContentSerializerNameAttribute_WhenGetPropertyName_ThenReturnsDeclaredName()
-        {
-            var page = new PropertyNameStrategyPage();
+        var result = _sut.GetPropertyName(page.GetType().GetProperty(nameof(PropertyNameStrategyPage.Heading)));
 
-            var result = this._sut.GetPropertyName(page.GetType().GetProperty(nameof(PropertyNameStrategyPage.Heading)));
+        result.ShouldBe("Heading");
+    }
 
-            result.ShouldBe("Heading");
-        }
+    [Fact]
+    public void GivenContentSerializerNameAttribute_WhenGetPropertyName_ThenReturnsOverridenName()
+    {
+        var page = new PropertyNameStrategyPage();
 
-        [Fact]
-        public void GivenContentSerializerNameAttribute_WhenGetPropertyName_ThenReturnsOverridenName()
-        {
-            var page = new PropertyNameStrategyPage();
+        var result = _sut.GetPropertyName(page.GetType().GetProperty(nameof(PropertyNameStrategyPage.Author)));
 
-            var result = this._sut.GetPropertyName(page.GetType().GetProperty(nameof(PropertyNameStrategyPage.Author)));
-
-            result.ShouldBe("customAuthor");
-        }
+        result.ShouldBe("customAuthor");
     }
 }

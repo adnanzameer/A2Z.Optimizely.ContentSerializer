@@ -1,53 +1,52 @@
 ﻿using System.Reflection;
+using A2Z.Optimizely.ContentSerializer.Internal;
+using A2Z.Optimizely.ContentSerializer.Internal.Default;
 using EPiServer;
 using EPiServer.Core;
 using EPiServer.Shell.ObjectEditing;
-using A2Z.Optimizely.ContentSerializer.Internal;
-using A2Z.Optimizely.ContentSerializer.Internal.Default;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent.SelectStrategies
+namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent.SelectStrategies;
+
+public class CustomSelectOneStrategy : ISelectOneStrategy
 {
-    public class CustomSelectOneStrategy : ISelectOneStrategy
+    private static readonly IReadOnlyDictionary<Type, Dictionary<string, bool>> CustomProperties =
+        new Dictionary<Type, Dictionary<string, bool>>
+        {
+            {
+                typeof(StringPropertyHandlerPage), new Dictionary<string, bool>
+                {
+                    {nameof(StringPropertyHandlerPage.SelectedOnlyOne), false},
+                    {nameof(StringPropertyHandlerPage.SelectedOnlyValueOnlyOne), true}
+                }
+            }
+        };
+
+    private readonly ISelectOneStrategy _defaultSelectOneStrategy;
+    public CustomSelectOneStrategy()
     {
-        private static readonly IReadOnlyDictionary<Type, Dictionary<string, bool>> CustomProperties =
-            new Dictionary<Type, Dictionary<string, bool>>
-            {
-                {
-                    typeof(StringPropertyHandlerPage), new Dictionary<string, bool>
-                    {
-                        {nameof(StringPropertyHandlerPage.SelectedOnlyOne), false},
-                        {nameof(StringPropertyHandlerPage.SelectedOnlyValueOnlyOne), true}
-                    }
-                }
-            };
+        _defaultSelectOneStrategy = new DefaultSelectStrategy();
+    }
 
-        private readonly ISelectOneStrategy _defaultSelectOneStrategy;
-        public CustomSelectOneStrategy()
+    public object Execute(PropertyInfo property, IContentData contentData, ISelectionFactory selectionFactory)
+    {
+        var result = (IEnumerable<SelectOption>)_defaultSelectOneStrategy.Execute(property, contentData, selectionFactory);
+        var type = contentData.GetOriginalType();
+        if (IsCustomContentType(type, property.Name))
         {
-            _defaultSelectOneStrategy = new DefaultSelectStrategy();
-        }
-
-        public object Execute(PropertyInfo property, IContentData contentData, ISelectionFactory selectionFactory)
-        {
-            var result = (IEnumerable<SelectOption>)_defaultSelectOneStrategy.Execute(property, contentData, selectionFactory);
-            var type = contentData.GetOriginalType();
-            if (IsCustomContentType(type, property.Name))
+            var onlyValue = CustomProperties[type][property.Name];
+            if (onlyValue)
             {
-                var onlyValue = CustomProperties[type][property.Name];
-                if (onlyValue)
-                {
-                    return result.FirstOrDefault(x => x.Selected)?.Value;
-                }
-
-                return result.FirstOrDefault(x => x.Selected);
+                return result.FirstOrDefault(x => x.Selected)?.Value;
             }
 
-            return result;
+            return result.FirstOrDefault(x => x.Selected);
         }
 
-        private static bool IsCustomContentType(Type type, string propertyName)
-        {
-            return CustomProperties.ContainsKey(type) && CustomProperties[type].ContainsKey(propertyName);
-        }
+        return result;
+    }
+
+    private static bool IsCustomContentType(Type type, string propertyName)
+    {
+        return CustomProperties.ContainsKey(type) && CustomProperties[type].ContainsKey(propertyName);
     }
 }

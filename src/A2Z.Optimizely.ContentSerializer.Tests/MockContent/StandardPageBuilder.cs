@@ -1,148 +1,147 @@
 ﻿using AutoFixture;
 using EPiServer.Core;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent
+namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent;
+
+public class StandardPageBuilder
 {
-    public class StandardPageBuilder
+    private string _heading = new Fixture().Create<string>();
+    private string _description = new Fixture().Create<string>();
+    private int _age = new Fixture().Create<int>();
+    private double _degrees = new Fixture().Create<double>();
+    private DateTime _starting = new Fixture().Create<DateTime>();
+    private bool _private = new Fixture().Create<bool>();
+    private XhtmlString _mainBody = new("<h1>This is <b>HTML</b> </h1>");
+    private ContentArea _mainContentArea = new(); // TODO USE BUILDER HERE
+    private VideoBlock _mainVideo = new(); // TODO USE BUILDER HERE.
+    private ContentReference _contentReference = new(1000);
+    private PageReference _pageReference = new(2000);
+    private IEnumerable<string> _strings = new string[0];
+    private IEnumerable<int> _ints = new int[0];
+    private IEnumerable<double> _doubles = new double[0];
+    private IEnumerable<DateTime> _dateTimes = new DateTime[0];
+
+    public StandardPageBuilder WithHeading(string h)
     {
-        private string _heading = new Fixture().Create<string>();
-        private string _description = new Fixture().Create<string>();
-        private int _age = new Fixture().Create<int>();
-        private double _degrees = new Fixture().Create<double>();
-        private DateTime _starting = new Fixture().Create<DateTime>();
-        private bool _private = new Fixture().Create<bool>();
-        private XhtmlString _mainBody = new XhtmlString("<h1>This is <b>HTML</b> </h1>");
-        private ContentArea _mainContentArea = new ContentArea(); // TODO USE BUILDER HERE
-        private VideoBlock _mainVideo = new VideoBlock(); // TODO USE BUILDER HERE.
-        private ContentReference _contentReference = new ContentReference(1000);
-        private PageReference _pageReference = new PageReference(2000);
-        private IEnumerable<string> _strings = new string[0];
-        private IEnumerable<int> _ints = new int[0];
-        private IEnumerable<double> _doubles = new double[0];
-        private IEnumerable<DateTime> _dateTimes = new DateTime[0];
+        _heading = h;
+        return this;
+    }
 
-        public StandardPageBuilder WithHeading(string h)
-        {
-            _heading = h;
-            return this;
-        }
+    public StandardPageBuilder WithDescription(string d)
+    {
+        _description = d;
+        return this;
+    }
 
-        public StandardPageBuilder WithDescription(string d)
-        {
-            _description = d;
-            return this;
-        }
+    public StandardPageBuilder WithAge(int a)
+    {
+        _age = a;
+        return this;
+    }
 
-        public StandardPageBuilder WithAge(int a)
-        {
-            _age = a;
-            return this;
-        }
+    public StandardPageBuilder WithDegrees(double d)
+    {
+        _degrees = d;
+        return this;
+    }
 
-        public StandardPageBuilder WithDegrees(double d)
-        {
-            _degrees = d;
-            return this;
-        }
+    public StandardPageBuilder WithStarting(DateTime s)
+    {
+        _starting = s;
+        return this;
+    }
 
-        public StandardPageBuilder WithStarting(DateTime s)
-        {
-            _starting = s;
-            return this;
-        }
+    public StandardPageBuilder WithPrivate(bool p)
+    {
+        _private = p;
+        return this;
+    }
 
-        public StandardPageBuilder WithPrivate(bool p)
-        {
-            _private = p;
-            return this;
-        }
+    public StandardPageBuilder WithMainBody(XhtmlString m)
+    {
+        _mainBody = m;
+        return this;
+    }
 
-        public StandardPageBuilder WithMainBody(XhtmlString m)
-        {
-            _mainBody = m;
-            return this;
-        }
+    public StandardPageBuilder WithMainBody(string m)
+    {
+        _mainBody = new XhtmlString(m);
+        return this;
+    }
 
-        public StandardPageBuilder WithMainBody(string m)
-        {
-            _mainBody = new XhtmlString(m);
-            return this;
-        }
+    public StandardPageBuilder WithMainContentArea(ContentArea m)
+    {
+        _mainContentArea = m;
+        return this;
+    }
 
-        public StandardPageBuilder WithMainContentArea(ContentArea m)
-        {
-            _mainContentArea = m;
-            return this;
-        }
+    public StandardPageBuilder WithMainContentArea(string m)
+    {
+        _mainContentArea = new ContentArea(m);
+        return this;
+    }
 
-        public StandardPageBuilder WithMainContentArea(string m)
-        {
-            _mainContentArea = new ContentArea(m);
-            return this;
-        }
+    public StandardPageBuilder WithMainVideo(VideoBlock v)
+    {
+        _mainVideo = v;
+        return this;
+    }
 
-        public StandardPageBuilder WithMainVideo(VideoBlock v)
-        {
-            _mainVideo = v;
-            return this;
-        }
+    public StandardPageBuilder WithContentReference(ContentReference c)
+    {
+        _contentReference = c;
+        return this;
+    }
 
-        public StandardPageBuilder WithContentReference(ContentReference c)
-        {
-            _contentReference = c;
-            return this;
-        }
+    public StandardPageBuilder WithPageReference(PageReference c)
+    {
+        _pageReference = c;
+        return this;
+    }
 
-        public StandardPageBuilder WithPageReference(PageReference c)
-        {
-            _pageReference = c;
-            return this;
-        }
+    public StandardPageBuilder WithStrings(IEnumerable<string> s)
+    {
+        _strings = s;
+        return this;
+    }
 
-        public StandardPageBuilder WithStrings(IEnumerable<string> s)
-        {
-            _strings = s;
-            return this;
-        }
+    public StandardPageBuilder WithInts(IEnumerable<int> i)
+    {
+        _ints = i;
+        return this;
+    }
 
-        public StandardPageBuilder WithInts(IEnumerable<int> i)
-        {
-            _ints = i;
-            return this;
-        }
+    public StandardPageBuilder WithDoubles(IEnumerable<double> d)
+    {
+        _doubles = d;
+        return this;
+    }
 
-        public StandardPageBuilder WithDoubles(IEnumerable<double> d)
-        {
-            _doubles = d;
-            return this;
-        }
+    public StandardPageBuilder WithDateTimes(IEnumerable<DateTime> d)
+    {
+        _dateTimes = d;
+        return this;
+    }
 
-        public StandardPageBuilder WithDateTimes(IEnumerable<DateTime> d)
+    public StandardPage Build()
+    {
+        return new StandardPage
         {
-            _dateTimes = d;
-            return this;
-        }
-
-        public StandardPage Build()
-        {
-            return new StandardPage
-            {
-                Heading = _heading,
-                Description = _description,
-                Age = _age,
-                Degrees = _degrees,
-                Private = _private,
-                Starting = _starting,
-                MainBody = _mainBody,
-                MainContentArea = _mainContentArea,
-                MainVideo = _mainVideo,
-                ContentReference =  _contentReference,
-                PageReference = _pageReference,
-                Strings = _strings,
-                Ints = _ints,
-                Doubles = _doubles,
-                DateTimes = _dateTimes
-            };
-        }
+            Heading = _heading,
+            Description = _description,
+            Age = _age,
+            Degrees = _degrees,
+            Private = _private,
+            Starting = _starting,
+            MainBody = _mainBody,
+            MainContentArea = _mainContentArea,
+            MainVideo = _mainVideo,
+            ContentReference =  _contentReference,
+            PageReference = _pageReference,
+            Strings = _strings,
+            Ints = _ints,
+            Doubles = _doubles,
+            DateTimes = _dateTimes
+        };
     }
 }

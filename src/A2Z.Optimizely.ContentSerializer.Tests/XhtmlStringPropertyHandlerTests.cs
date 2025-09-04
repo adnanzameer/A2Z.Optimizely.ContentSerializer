@@ -2,23 +2,22 @@
 using Shouldly;
 using Xunit;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests
+namespace A2Z.Optimizely.ContentSerializer.Tests;
+
+public class XhtmlStringPropertyHandlerTests
 {
-    public class XhtmlStringPropertyHandlerTests
+    private readonly XhtmlStringPropertyHandler _sut;
+
+    public XhtmlStringPropertyHandlerTests()
     {
-        private readonly XhtmlStringPropertyHandler _sut;
+        _sut = new XhtmlStringPropertyHandler(new ContentSerializerSettings());
+    }
 
-        public XhtmlStringPropertyHandlerTests()
-        {
-            this._sut = new XhtmlStringPropertyHandler(new ContentSerializerSettings());
-        }
+    [Fact]
+    public void GivenNullXhtmlString_WhenHandle_ThenReturnsNull()
+    {
+        var result = _sut.Handle(null, null, null);
 
-        [Fact]
-        public void GivenNullXhtmlString_WhenHandle_ThenReturnsNull()
-        {
-            var result = this._sut.Handle(null, null, null);
-
-            result.ShouldBeNull();
-        }
+        result.ShouldBeNull();
     }
 }

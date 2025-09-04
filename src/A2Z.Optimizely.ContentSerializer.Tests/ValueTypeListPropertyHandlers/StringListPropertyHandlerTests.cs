@@ -2,55 +2,54 @@
 using Shouldly;
 using Xunit;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.ValueTypeListPropertyHandlers
+namespace A2Z.Optimizely.ContentSerializer.Tests.ValueTypeListPropertyHandlers;
+
+public class StringListPropertyHandlerTests
 {
-    public class StringListPropertyHandlerTests
+    private readonly StringListPropertyHandler _sut;
+
+    public StringListPropertyHandlerTests()
     {
-        private readonly StringListPropertyHandler _sut;
+        _sut = new StringListPropertyHandler(new ContentSerializerSettings());
+    }
 
-        public StringListPropertyHandlerTests()
-        {
-            this._sut = new StringListPropertyHandler(new ContentSerializerSettings());
-        }
+    [Fact]
+    public void GivenNullList_WhenHandle_ThenReturnsNull()
+    {
+        var result = _sut.Handle(null, null, null);
 
-        [Fact]
-        public void GivenNullList_WhenHandle_ThenReturnsNull()
-        {
-            var result = this._sut.Handle(null, null, null);
+        result.ShouldBeNull();
+    }
 
-            result.ShouldBeNull();
-        }
+    [Fact]
+    public void GivenEmptyList_WhenHandle_ThenReturnsSameList()
+    {
+        var result = _sut.Handle(Enumerable.Empty<string>(), null, null);
 
-        [Fact]
-        public void GivenEmptyList_WhenHandle_ThenReturnsSameList()
-        {
-            var result = this._sut.Handle(Enumerable.Empty<string>(), null, null);
+        ((IEnumerable<string>)result).ShouldBeEmpty();
+    }
 
-            ((IEnumerable<string>)result).ShouldBeEmpty();
-        }
+    [Fact]
+    public void GivenPopulatedList_WhenHandle_ThenReturnsSameList()
+    {
+        var items = new List<string>{"any", "value"};
 
-        [Fact]
-        public void GivenPopulatedList_WhenHandle_ThenReturnsSameList()
-        {
-            var items = new List<string>{"any", "value"};
+        var result = _sut.Handle(items, null, null);
 
-            var result = this._sut.Handle(items, null, null);
+        ((IEnumerable<string>)result).ShouldContain("any");
+        ((IEnumerable<string>)result).ShouldContain("value");
+        ((IEnumerable<string>)result).Count().ShouldBe(2);
+    }
 
-            ((IEnumerable<string>)result).ShouldContain("any");
-            ((IEnumerable<string>)result).ShouldContain("value");
-            ((IEnumerable<string>)result).Count().ShouldBe(2);
-        }
+    [Fact]
+    public void GivenStringArray_WhenHandle_ThenReturnsIEnumerableString()
+    {
+        var items = new[] { "any", "value" };
 
-        [Fact]
-        public void GivenStringArray_WhenHandle_ThenReturnsIEnumerableString()
-        {
-            var items = new[] { "any", "value" };
+        var result = _sut.Handle(items, null, null);
 
-            var result = this._sut.Handle(items, null, null);
-
-            ((IEnumerable<string>)result).ShouldContain("any");
-            ((IEnumerable<string>)result).ShouldContain("value");
-            ((IEnumerable<string>)result).Count().ShouldBe(2);
-        }
+        ((IEnumerable<string>)result).ShouldContain("any");
+        ((IEnumerable<string>)result).ShouldContain("value");
+        ((IEnumerable<string>)result).Count().ShouldBe(2);
     }
 }

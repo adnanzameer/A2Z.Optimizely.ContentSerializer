@@ -1,35 +1,34 @@
-﻿using EPiServer.DataAbstraction;
-using A2Z.Optimizely.ContentSerializer.Internal.Default;
+﻿using A2Z.Optimizely.ContentSerializer.Internal.Default;
+using EPiServer.DataAbstraction;
 using Shouldly;
 using Xunit;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests
+namespace A2Z.Optimizely.ContentSerializer.Tests;
+
+public class PageTypePropertyHandlerTests
 {
-    public class PageTypePropertyHandlerTests
+    private readonly PageTypePropertyHandler _sut;
+
+    public PageTypePropertyHandlerTests()
     {
-        private readonly PageTypePropertyHandler _sut;
+        _sut = new PageTypePropertyHandler(new ContentSerializerSettings());
+    }
 
-        public PageTypePropertyHandlerTests()
-        {
-            this._sut = new PageTypePropertyHandler(new ContentSerializerSettings());
-        }
+    [Fact]
+    public void GivenNullPageType_WhenHandle_ThenReturnsNull()
+    {
+        var result = _sut.Handle(null, null, null);
 
-        [Fact]
-        public void GivenNullPageType_WhenHandle_ThenReturnsNull()
-        {
-            var result = this._sut.Handle(null, null, null);
+        result.ShouldBeNull();
+    }
 
-            result.ShouldBeNull();
-        }
+    [Fact]
+    public void GivenPageType_WhenHandle_ThenReturnsCorrectValue()
+    {
+        var pageType = new PageType {Name = "anytype"};
 
-        [Fact]
-        public void GivenPageType_WhenHandle_ThenReturnsCorrectValue()
-        {
-            var pageType = new PageType {Name = "anytype"};
+        var result = _sut.Handle(pageType, null, null);
 
-            var result = this._sut.Handle(pageType, null, null);
-
-            ((PageTypeModel)result).Name.ShouldBe(pageType.Name);
-        }
+        ((PageTypeModel)result).Name.ShouldBe(pageType.Name);
     }
 }

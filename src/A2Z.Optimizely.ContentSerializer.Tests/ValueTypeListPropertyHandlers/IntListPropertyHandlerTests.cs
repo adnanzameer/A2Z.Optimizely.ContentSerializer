@@ -2,43 +2,42 @@
 using Shouldly;
 using Xunit;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.ValueTypeListPropertyHandlers
+namespace A2Z.Optimizely.ContentSerializer.Tests.ValueTypeListPropertyHandlers;
+
+public class IntListPropertyHandlerTests
 {
-    public class IntListPropertyHandlerTests
+    private readonly IntListPropertyHandler _sut;
+
+    public IntListPropertyHandlerTests()
     {
-        private readonly IntListPropertyHandler _sut;
+        _sut = new IntListPropertyHandler(new ContentSerializerSettings());
+    }
 
-        public IntListPropertyHandlerTests()
-        {
-            this._sut = new IntListPropertyHandler(new ContentSerializerSettings());
-        }
+    [Fact]
+    public void GivenNullList_WhenHandle_ThenReturnsNull()
+    {
+        var result = _sut.Handle(null, null, null);
 
-        [Fact]
-        public void GivenNullList_WhenHandle_ThenReturnsNull()
-        {
-            var result = this._sut.Handle(null, null, null);
+        result.ShouldBeNull();
+    }
 
-            result.ShouldBeNull();
-        }
+    [Fact]
+    public void GivenEmptyList_WhenHandle_ThenReturnsSameList()
+    {
+        var result = _sut.Handle(Enumerable.Empty<int>(), null, null);
 
-        [Fact]
-        public void GivenEmptyList_WhenHandle_ThenReturnsSameList()
-        {
-            var result = this._sut.Handle(Enumerable.Empty<int>(), null, null);
+        ((IEnumerable<int>)result).ShouldBeEmpty();
+    }
 
-            ((IEnumerable<int>)result).ShouldBeEmpty();
-        }
+    [Fact]
+    public void GivenPopulatedList_WhenHandle_ThenReturnsSameList()
+    {
+        var items = new List<int> { 1000, 2000 };
 
-        [Fact]
-        public void GivenPopulatedList_WhenHandle_ThenReturnsSameList()
-        {
-            var items = new List<int> { 1000, 2000 };
+        var result = _sut.Handle(items, null, null);
 
-            var result = this._sut.Handle(items, null, null);
-
-            ((IEnumerable<int>)result).ShouldContain(1000);
-            ((IEnumerable<int>)result).ShouldContain(2000);
-            ((IEnumerable<int>)result).Count().ShouldBe(2);
-        }
+        ((IEnumerable<int>)result).ShouldContain(1000);
+        ((IEnumerable<int>)result).ShouldContain(2000);
+        ((IEnumerable<int>)result).Count().ShouldBe(2);
     }
 }

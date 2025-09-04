@@ -1,6 +1,5 @@
-﻿namespace A2Z.Optimizely.ContentSerializer.Tests
+﻿namespace A2Z.Optimizely.ContentSerializer.Tests;
+
+class UrlHelperAdapterTests
 {
-    class UrlHelperAdapterTests
-    {
-    }
 }

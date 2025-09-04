@@ -3,31 +3,30 @@ using A2Z.Optimizely.ContentSerializer.Tests.MockContent;
 using Shouldly;
 using Xunit;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.ValueTypePropertyHandlers
+namespace A2Z.Optimizely.ContentSerializer.Tests.ValueTypePropertyHandlers;
+
+public class IntPropertyHandlerTests
 {
-    public class IntPropertyHandlerTests
+    private readonly IntPropertyHandler _sut;
+
+    public IntPropertyHandlerTests()
     {
-        private readonly IntPropertyHandler _sut;
+        _sut = new IntPropertyHandler(new ContentSerializerSettings());
+    }
 
-        public IntPropertyHandlerTests()
+    [Fact]
+    public void GivenIntProperty_WhenHandle_ThenReturnsCorrectValue()
+    {
+        var page = new ValueTypePropertyHandlerPage
         {
-            this._sut = new IntPropertyHandler(new ContentSerializerSettings());
-        }
+            Integer = 1000
+        };
 
-        [Fact]
-        public void GivenIntProperty_WhenHandle_ThenReturnsCorrectValue()
-        {
-            var page = new ValueTypePropertyHandlerPage
-            {
-                Integer = 1000
-            };
+        var result = (int)_sut.Handle(
+            page.Integer,
+            page.GetType().GetProperty(nameof(ValueTypePropertyHandlerPage.Integer)),
+            page);
 
-            var result = (int)this._sut.Handle(
-                page.Integer,
-                page.GetType().GetProperty(nameof(ValueTypePropertyHandlerPage.Integer)),
-                page);
-
-            result.ShouldBe(1000);
-        }
+        result.ShouldBe(1000);
     }
 }

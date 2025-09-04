@@ -2,23 +2,22 @@
 using Shouldly;
 using Xunit;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests
+namespace A2Z.Optimizely.ContentSerializer.Tests;
+
+public class PropertyHandlerServiceTests
 {
-    public class PropertyHandlerServiceTests
+    private readonly PropertyHandlerService _sut;
+
+    public PropertyHandlerServiceTests()
     {
-        private readonly PropertyHandlerService _sut;
+        _sut = new PropertyHandlerService();
+    }
 
-        public PropertyHandlerServiceTests()
-        {
-            this._sut = new PropertyHandlerService();
-        }
+    [Fact]
+    public void GivenNullPropertyInfo_WhenGetPropertyHandler_ThenReturnsNull()
+    {
+        var result = _sut.GetPropertyHandler(null);
 
-        [Fact]
-        public void GivenNullPropertyInfo_WhenGetPropertyHandler_ThenReturnsNull()
-        {
-            var result = this._sut.GetPropertyHandler(null);
-
-            result.ShouldBeNull();
-        }
+        result.ShouldBeNull();
     }
 }

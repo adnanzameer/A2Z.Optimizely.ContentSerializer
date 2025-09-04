@@ -1,72 +1,71 @@
-﻿using EPiServer.Core;
-using A2Z.Optimizely.ContentSerializer.Internal.Default;
+﻿using A2Z.Optimizely.ContentSerializer.Internal.Default;
+using EPiServer.Core;
 using NSubstitute;
 using Shouldly;
 using Xunit;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests
+namespace A2Z.Optimizely.ContentSerializer.Tests;
+
+public class ContentReferencePropertyHandlerTests
 {
-    public class ContentReferencePropertyHandlerTests
+    private readonly ContentReferencePropertyHandler _sut;
+    private readonly IUrlHelper _urlHelper;
+    private IContentSerializerSettings _contentSerializerSettings;
+
+    public ContentReferencePropertyHandlerTests()
     {
-        private readonly ContentReferencePropertyHandler _sut;
-        private readonly IUrlHelper _urlHelper;
-        private IContentSerializerSettings _contentSerializerSettings;
+        _contentSerializerSettings = Substitute.For<IContentSerializerSettings>();
+        _contentSerializerSettings.UrlSettings = new UrlSettings();
+        _urlHelper = Substitute.For<IUrlHelper>();
+        _sut = new ContentReferencePropertyHandler(_urlHelper, _contentSerializerSettings);
+    }
 
-        public ContentReferencePropertyHandlerTests()
-        {
-            this._contentSerializerSettings = Substitute.For<IContentSerializerSettings>();
-            this._contentSerializerSettings.UrlSettings = new UrlSettings();
-            this._urlHelper = Substitute.For<IUrlHelper>();
-            this._sut = new ContentReferencePropertyHandler(this._urlHelper, this._contentSerializerSettings);
-        }
+    [Fact]
+    public void GivenNullContentReference_WhenHandle_ThenReturnsNull()
+    {
+        var result = _sut.Handle(null, null, null);
 
-        [Fact]
-        public void GivenNullContentReference_WhenHandle_ThenReturnsNull()
-        {
-            var result = this._sut.Handle(null, null, null);
+        result.ShouldBeNull();
+    }
 
-            result.ShouldBeNull();
-        }
+    [Fact]
+    public void GivenEmptyContentReference_WhenHandle_ThenReturnsNull()
+    {
+        var result = _sut.Handle(ContentReference.EmptyReference, null, null);
 
-        [Fact]
-        public void GivenEmptyContentReference_WhenHandle_ThenReturnsNull()
-        {
-            var result = this._sut.Handle(ContentReference.EmptyReference, null, null);
+        result.ShouldBeNull();
+    }
 
-            result.ShouldBeNull();
-        }
+    [Fact]
+    public void GivenContentReference_WhenHandle_ThenReturnsAbsoluteUrlString()
+    {
+        var host = "example.com";
+        var scheme = "https://";
+        var baseUrl = $"{scheme}{host}";
+        var prettyPath = "/any-path/to/page/?anyQueryParam=value&anotherQuery";
+        var contentReference = new ContentReference(1000);
+        _urlHelper.ContentUrl(contentReference, _contentSerializerSettings.UrlSettings)
+            .Returns($"{baseUrl}{prettyPath}");
 
-        [Fact]
-        public void GivenContentReference_WhenHandle_ThenReturnsAbsoluteUrlString()
-        {
-            var host = "example.com";
-            var scheme = "https://";
-            var baseUrl = $"{scheme}{host}";
-            var prettyPath = "/any-path/to/page/?anyQueryParam=value&anotherQuery";
-            var contentReference = new ContentReference(1000);
-            this._urlHelper.ContentUrl(contentReference, this._contentSerializerSettings.UrlSettings)
-                .Returns($"{baseUrl}{prettyPath}");
+        var result = _sut.Handle(contentReference, null, null);
 
-            var result = this._sut.Handle(contentReference, null, null);
+        result.ShouldBe($"{baseUrl}{prettyPath}");
+    }
 
-            result.ShouldBe($"{baseUrl}{prettyPath}");
-        }
+    [Fact]
+    public void GivenContentReference_WhenHandleWithUseAbsoluteUrlsSetToFalse_ThenReturnsRelativeUrlString()
+    {
+        var host = "example.com";
+        var scheme = "https://";
+        var baseUrl = $"{scheme}{host}";
+        var prettyPath = "/any-path/to/page/?anyQueryParam=value&anotherQuery";
+        var contentReference = new ContentReference(1000);
+        _contentSerializerSettings.UrlSettings.Returns(new UrlSettings { UseAbsoluteUrls = false });
+        _urlHelper.ContentUrl(Arg.Any<ContentReference>(), _contentSerializerSettings.UrlSettings)
+            .Returns($"{baseUrl}{prettyPath}");
 
-        [Fact]
-        public void GivenContentReference_WhenHandleWithUseAbsoluteUrlsSetToFalse_ThenReturnsRelativeUrlString()
-        {
-            var host = "example.com";
-            var scheme = "https://";
-            var baseUrl = $"{scheme}{host}";
-            var prettyPath = "/any-path/to/page/?anyQueryParam=value&anotherQuery";
-            var contentReference = new ContentReference(1000);
-            this._contentSerializerSettings.UrlSettings.Returns(new UrlSettings { UseAbsoluteUrls = false });
-            this._urlHelper.ContentUrl(Arg.Any<ContentReference>(), this._contentSerializerSettings.UrlSettings)
-                .Returns($"{baseUrl}{prettyPath}");
+        var result = _sut.Handle(contentReference, null, null);
 
-            var result = this._sut.Handle(contentReference, null, null);
-
-            result.ShouldBe(prettyPath);
-        }
+        result.ShouldBe(prettyPath);
     }
 }

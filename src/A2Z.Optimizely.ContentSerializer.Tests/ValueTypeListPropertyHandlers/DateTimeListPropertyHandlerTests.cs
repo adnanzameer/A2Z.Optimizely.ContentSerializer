@@ -2,45 +2,44 @@
 using Shouldly;
 using Xunit;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.ValueTypeListPropertyHandlers
+namespace A2Z.Optimizely.ContentSerializer.Tests.ValueTypeListPropertyHandlers;
+
+public class DateTimeListPropertyHandlerTests
 {
-    public class DateTimeListPropertyHandlerTests
+    private readonly DateTimeListPropertyHandler _sut;
+
+    public DateTimeListPropertyHandlerTests()
     {
-        private readonly DateTimeListPropertyHandler _sut;
+        _sut = new DateTimeListPropertyHandler(new ContentSerializerSettings());
+    }
 
-        public DateTimeListPropertyHandlerTests()
-        {
-            this._sut = new DateTimeListPropertyHandler(new ContentSerializerSettings());
-        }
+    [Fact]
+    public void GivenNullList_WhenHandle_ThenReturnsNull()
+    {
+        var result = _sut.Handle(null, null, null);
 
-        [Fact]
-        public void GivenNullList_WhenHandle_ThenReturnsNull()
-        {
-            var result = this._sut.Handle(null, null, null);
+        result.ShouldBeNull();
+    }
 
-            result.ShouldBeNull();
-        }
+    [Fact]
+    public void GivenEmptyList_WhenHandle_ThenReturnsSameList()
+    {
+        var result = _sut.Handle(Enumerable.Empty<DateTime>(), null, null);
 
-        [Fact]
-        public void GivenEmptyList_WhenHandle_ThenReturnsSameList()
-        {
-            var result = this._sut.Handle(Enumerable.Empty<DateTime>(), null, null);
+        ((IEnumerable<DateTime>)result).ShouldBeEmpty();
+    }
 
-            ((IEnumerable<DateTime>)result).ShouldBeEmpty();
-        }
+    [Fact]
+    public void GivenPopulatedList_WhenHandle_ThenReturnsSameList()
+    {
+        var year2000 = new DateTime(2000, 1, 20);
+        var year3000 = new DateTime(3000, 1, 20);
+        var items = new List<DateTime> { year2000, year3000};
 
-        [Fact]
-        public void GivenPopulatedList_WhenHandle_ThenReturnsSameList()
-        {
-            var year2000 = new DateTime(2000, 1, 20);
-            var year3000 = new DateTime(3000, 1, 20);
-            var items = new List<DateTime> { year2000, year3000};
+        var result = _sut.Handle(items, null, null);
 
-            var result = this._sut.Handle(items, null, null);
-
-            ((IEnumerable<DateTime>)result).ShouldContain(year2000);
-            ((IEnumerable<DateTime>)result).ShouldContain(year3000);
-            ((IEnumerable<DateTime>)result).Count().ShouldBe(2);
-        }
+        ((IEnumerable<DateTime>)result).ShouldContain(year2000);
+        ((IEnumerable<DateTime>)result).ShouldContain(year3000);
+        ((IEnumerable<DateTime>)result).Count().ShouldBe(2);
     }
 }

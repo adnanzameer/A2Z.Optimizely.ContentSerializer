@@ -3,31 +3,26 @@ using A2Z.Optimizely.ContentSerializer.Tests.MockContent;
 using Shouldly;
 using Xunit;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.ValueTypePropertyHandlers
+namespace A2Z.Optimizely.ContentSerializer.Tests.ValueTypePropertyHandlers;
+
+public class DateTimePropertyHandlerTests
 {
-    public class DateTimePropertyHandlerTests
+    private readonly DateTimePropertyHandler _sut = new(new ContentSerializerSettings());
+
+    [Fact]
+    public void GivenDateTimeProperty_WhenHandle_ThenReturnsCorrectValue()
     {
-        private readonly DateTimePropertyHandler _sut;
-        public DateTimePropertyHandlerTests()
+        var expected = new DateTime(2000, 01, 01, 12, 00, 30);
+        var page = new ValueTypePropertyHandlerPage
         {
-            this._sut = new DateTimePropertyHandler(new ContentSerializerSettings());
-        }
+            DateTime = expected
+        };
 
-        [Fact]
-        public void GivenDateTimeProperty_WhenHandle_ThenReturnsCorrectValue()
-        {
-            var expected = new DateTime(2000, 01, 01, 12, 00, 30);
-            var page = new ValueTypePropertyHandlerPage
-            {
-                DateTime = expected
-            };
+        var result = (DateTime)_sut.Handle(
+            page.DateTime,
+            page.GetType().GetProperty(nameof(ValueTypePropertyHandlerPage.DateTime)),
+            page);
 
-            var result = (DateTime)this._sut.Handle(
-                page.DateTime,
-                page.GetType().GetProperty(nameof(ValueTypePropertyHandlerPage.DateTime)),
-                page);
-
-            result.ShouldBe(expected);
-        }
+        result.ShouldBe(expected);
     }
 }
