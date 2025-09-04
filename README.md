@@ -1,6 +1,6 @@
 # A2Z.Optimizely.ContentSerializer
 
-✨ A modernized **Content Serializer for Optimizely CMS 12 (.NET 6 / .NET 8)** ✨  
+✨ A modernized **Content Serializer for Optimizely CMS 12 (.NET Core)** ✨  
 
 [![.NET](https://img.shields.io/badge/.NET-6.0-purple.svg)](https://dotnet.microsoft.com/) 
 [![.NET](https://img.shields.io/badge/.NET-8.0-purple.svg)](https://dotnet.microsoft.com/) 
@@ -23,13 +23,20 @@ All credit for the original implementation goes to **Josef Ottosson**.
 This fork is maintained by **Adnan Zameer** (A2Z) and modernized to support the latest Optimizely DXP platform.
 
 ---
+## Serialize any ContentData object to JSON(or xml, or something else)
 
-## 📦 Installation
+### 📦 Installation
 
 Install via [Optimizely NuGet](https://nuget.optimizely.com/):
 
-```bash
+```
 dotnet add package A2Z.Optimizely.ContentSerializer
+```
+
+#### *OR*
+Just check out the desired branch and add the A2Z.Optimizely.ContentSerializer project to your solution.
+
+---
 
 ### Features
 
