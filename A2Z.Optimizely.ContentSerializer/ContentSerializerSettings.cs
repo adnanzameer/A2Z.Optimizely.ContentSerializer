@@ -1,0 +1,9 @@
+﻿namespace A2Z.Optimizely.ContentSerializer
+{
+    public class ContentSerializerSettings : IContentSerializerSettings
+    {
+        public bool WrapContentAreaItems { get; set; } = true;
+        public IUrlSettings UrlSettings { get; set; } = new UrlSettings();
+        public string BlockTypePropertyName { get; set; } = "__type__";
+    }
+}
