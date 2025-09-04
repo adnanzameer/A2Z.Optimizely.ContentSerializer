@@ -18,6 +18,7 @@
 	<PackageTags>episerver optimizely json serializer ContentSerializer</PackageTags>
 	<NuspecFile>A2Z.Optimizely.ContentSerializer.nuspec</NuspecFile>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
 	<!-- Optimizely CMS 12 core packages -->
@@ -26,6 +27,9 @@
 
 	<!-- Json serializer -->
 	<PackageReference Include="Newtonsoft.Json" Version="13.*" />
+  </ItemGroup>
 
+  <ItemGroup>
+	<None Include="icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>

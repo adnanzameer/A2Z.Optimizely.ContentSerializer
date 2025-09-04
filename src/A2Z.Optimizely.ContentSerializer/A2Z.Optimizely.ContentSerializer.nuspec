@@ -4,21 +4,22 @@
 	<id>A2Z.Optimizely.ContentSerializer</id>
 	<version>1.0.0</version>
 	<iconUrl>https://raw.githubusercontent.com/adnanzameer/A2Z.Optimizely.ContentSerializer/master/src/A2Z.Optimizely.ContentSerializer/icon.png</iconUrl>
+	<icon>icon.png</icon>
 	<authors>Adnan Zameer</authors>
 	<description>A library that lets you serialize any ContentData object by simply calling .Serialize or .ToJson on it.</description>
 	<releaseNotes>https://github.com/adnanzameer/A2Z.Optimizely.ContentSerializer/blob/master/CHANGELOG.md</releaseNotes>
 	<projectUrl>https://github.com/adnanzameer/A2Z.Optimizely.ContentSerializer</projectUrl>
 	<tags>episerver optimizely json serializer ContentSerializer</tags>
-	  <dependencies>
-		  <group targetFramework=".NETCoreApp,Version=v6.0">
-			  <dependency id="EPiServer.CMS" version="[12.0.2,13.0.0)" />
-			  <dependency id="EPiServer.Framework" version="[12.0.3,13.0.0)" />
-			  <dependency id="Newtonsoft.Json" version="13.*" />
-		  </group>
-	  </dependencies>
+	<dependencies>
+	  <group targetFramework=".NETCoreApp,Version=v6.0">
+		<dependency id="EPiServer.CMS" version="[12.0.2,13.0.0)" />
+		<dependency id="EPiServer.Framework" version="[12.0.3,13.0.0)" />
+		<dependency id="Newtonsoft.Json" version="13.*" />
+	  </group>
+	</dependencies>
   </metadata>
-	<files>
-		<file src="icon.png" target="" />		
-		<file src="bin\net6.0\*.dll" target="lib\net6.0\" />
-	</files>
+  <files>
+	<file src="icon.png" target="" />
+	<file src="bin\net6.0\*.dll" target="lib\net6.0\" />
+  </files>
 </package>
