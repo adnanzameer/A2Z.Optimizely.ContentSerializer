@@ -1,21 +1,20 @@
-﻿using System;
-using EPiServer;
+﻿using EPiServer;
 using EPiServer.Core;
 using EPiServer.Web;
-using EPiServer.Web.Mvc.Html;
-using Microsoft.AspNetCore.Mvc.Routing;
+using EPiServer.Web.Routing;
+using System;
 
 namespace A2Z.Optimizely.ContentSerializer.Internal;
 
 public class UrlHelperAdapter : IUrlHelper
 {
-    private readonly UrlHelper _urlHelper;
+    private readonly IUrlResolver _urlHelper;
     private readonly ISiteDefinitionResolver _siteDefinitionResolver;
     private readonly IRequestHostResolver _requestHostResolver;
     private readonly IContentSerializerSettings _contentSerializerSettings;
 
     public UrlHelperAdapter(
-        UrlHelper urlHelper,
+        IUrlResolver urlHelper,
         ISiteDefinitionResolver siteDefinitionResolver,
         IRequestHostResolver requestHostResolver,
         IContentSerializerSettings contentSerializerSettings)
@@ -48,7 +47,7 @@ public class UrlHelperAdapter : IUrlHelper
 
     private string Execute(Url url, IUrlSettings urlSettings)
     {
-        var prettyUrl = _urlHelper.ContentUrl(url);
+        var prettyUrl = _urlHelper.GetUrl(url.ToString());
         if (urlSettings.UseAbsoluteUrls)
         {
             return CreateAbsoluteUrl(prettyUrl, urlSettings.FallbackToWildcard);
@@ -59,7 +58,7 @@ public class UrlHelperAdapter : IUrlHelper
 
     private string Execute(ContentReference contentReference, IUrlSettings urlSettings)
     {
-        var prettyUrl = _urlHelper.ContentUrl(contentReference);
+        var prettyUrl = _urlHelper.GetUrl(contentReference);
         if (urlSettings.UseAbsoluteUrls)
         {
             return CreateAbsoluteUrl(prettyUrl, urlSettings.FallbackToWildcard);

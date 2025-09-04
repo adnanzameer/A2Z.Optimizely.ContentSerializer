@@ -1,18 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<OutputType>Library</OutputType>
   </PropertyGroup>
-
+  <PropertyGroup>
+	<TargetFrameworks>net6.0;</TargetFrameworks>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<OutputPath>bin\</OutputPath>
+	<PackageId>A2Z.Optimizely.ContentSerializer</PackageId>
+	<Version>1.0.0.0</Version>
+	<Description>A library that lets you serialize any ContentData object by simply calling .Serialize or .ToJson on it.</Description>
+	<Authors>Adnan Zameer</Authors>
+	<IsPackable>True</IsPackable>
+	<PackageReleaseNotes>https://github.com/adnanzameer/A2Z.Optimizely.ContentSerializer/blob/master/CHANGELOG.md</PackageReleaseNotes>
+	<PackageProjectUrl>https://github.com/adnanzameer/A2Z.Optimizely.ContentSerializer</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/adnanzameer/A2Z.Optimizely.ContentSerializer</RepositoryUrl>
+	<RepositoryType>Git</RepositoryType>
+	<PackageTags>episerver optimizely json serializer ContentSerializer</PackageTags>
+	<NuspecFile>A2Z.Optimizely.ContentSerializer.nuspec</NuspecFile>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
   <ItemGroup>
-    <!-- Optimizely CMS 12 core packages -->
-    <PackageReference Include="EPiServer.CMS" Version="12.0.2" />
-    <PackageReference Include="EPiServer.Framework" Version="12.0.3" />
+	<!-- Optimizely CMS 12 core packages -->
+	<PackageReference Include="EPiServer.CMS" Version="12.0.2" />
+	<PackageReference Include="EPiServer.Framework" Version="12.0.3" />
 
-    <!-- Json serializer -->
-    <PackageReference Include="Newtonsoft.Json" Version="13.*" />
+	<!-- Json serializer -->
+	<PackageReference Include="Newtonsoft.Json" Version="13.*" />
 
   </ItemGroup>
 </Project>
