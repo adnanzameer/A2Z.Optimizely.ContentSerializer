@@ -15,7 +15,7 @@ This library is a **.NET Core / CMS 12** compatible fork of
 
 - The original package was built for **Optimizely CMS 11 (.NET Framework)**.  
 - This fork updates it to run on **Optimizely CMS 12 & .NET Core**.  
-- It provides a simple way to **serialize Optimizely content into structured JSON or HTML**.  
+- It provides a simple way to **serialize Optimizely content into structured JSON**.  
 
 💡 *All credit for the original implementation goes to Josef Ottosson. This repository builds on that foundation to support the modern Optimizely DXP platform.*  
 
