@@ -3,52 +3,51 @@ using EPiServer.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace A2Z.Optimizely.ContentSerializer.Internal
+namespace A2Z.Optimizely.ContentSerializer.Internal;
+
+public class JsonContentSerializer : IContentJsonSerializer
 {
-    public class JsonContentSerializer : IContentJsonSerializer
+    private readonly IPropertyManager _propertyManager;
+    private readonly IContentSerializerSettings _contentSerializerSettings;
+    private static readonly JsonSerializerSettings JsonSerializerSettings;
+
+    static JsonContentSerializer()
     {
-        private readonly IPropertyManager _propertyManager;
-        private readonly IContentSerializerSettings _contentSerializerSettings;
-        private static readonly JsonSerializerSettings JsonSerializerSettings;
-
-        static JsonContentSerializer()
+        JsonSerializerSettings = new JsonSerializerSettings
         {
-            JsonSerializerSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
-        }
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+    }
 
-        public JsonContentSerializer(IPropertyManager propertyManager, IContentSerializerSettings contentSerializerSettings)
-        {
-            _propertyManager = propertyManager ?? throw new ArgumentNullException(nameof(propertyManager));
-            _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
-        }
+    public JsonContentSerializer(IPropertyManager propertyManager, IContentSerializerSettings contentSerializerSettings)
+    {
+        _propertyManager = propertyManager ?? throw new ArgumentNullException(nameof(propertyManager));
+        _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
+    }
 
-        public string Serialize(IContentData contentData)
-        {
-            return Execute(contentData, _contentSerializerSettings);
-        }
+    public string Serialize(IContentData contentData)
+    {
+        return Execute(contentData, _contentSerializerSettings);
+    }
 
-        public string Serialize(IContentData contentData, IContentSerializerSettings settings)
-        {
-            return Execute(contentData, settings);
-        }
+    public string Serialize(IContentData contentData, IContentSerializerSettings settings)
+    {
+        return Execute(contentData, settings);
+    }
 
-        public object GetStructuredData(IContentData contentData)
-        {
-            return this._propertyManager.GetStructuredData(contentData, _contentSerializerSettings);
-        }
+    public object GetStructuredData(IContentData contentData)
+    {
+        return _propertyManager.GetStructuredData(contentData, _contentSerializerSettings);
+    }
 
-        public object GetStructuredData(IContentData contentData, IContentSerializerSettings settings)
-        {
-            return this._propertyManager.GetStructuredData(contentData, settings);
-        }
+    public object GetStructuredData(IContentData contentData, IContentSerializerSettings settings)
+    {
+        return _propertyManager.GetStructuredData(contentData, settings);
+    }
 
-        private string Execute(IContentData contentData, IContentSerializerSettings settings)
-        {
-            var result = this._propertyManager.GetStructuredData(contentData, settings);
-            return JsonConvert.SerializeObject(result, JsonSerializerSettings);
-        }
+    private string Execute(IContentData contentData, IContentSerializerSettings settings)
+    {
+        var result = _propertyManager.GetStructuredData(contentData, settings);
+        return JsonConvert.SerializeObject(result, JsonSerializerSettings);
     }
 }

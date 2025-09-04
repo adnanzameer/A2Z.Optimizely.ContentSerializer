@@ -1,15 +1,14 @@
 ﻿using System;
 
-namespace A2Z.Optimizely.ContentSerializer.Attributes
-{
-    [AttributeUsage(AttributeTargets.Property)]
-    public class ContentSerializerPropertyHandlerAttribute : Attribute
-    {
-        public ContentSerializerPropertyHandlerAttribute(Type propertyHandler)
-        {
-            PropertyHandler = propertyHandler;
-        }
+namespace A2Z.Optimizely.ContentSerializer.Attributes;
 
-        public Type PropertyHandler { get; }
+[AttributeUsage(AttributeTargets.Property)]
+public class ContentSerializerPropertyHandlerAttribute : Attribute
+{
+    public ContentSerializerPropertyHandlerAttribute(Type propertyHandler)
+    {
+        PropertyHandler = propertyHandler;
     }
+
+    public Type PropertyHandler { get; }
 }

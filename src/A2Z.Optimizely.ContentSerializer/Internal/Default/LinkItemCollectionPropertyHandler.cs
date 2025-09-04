@@ -6,53 +6,52 @@ using EPiServer;
 using EPiServer.Core;
 using EPiServer.SpecializedProperties;
 
-namespace A2Z.Optimizely.ContentSerializer.Internal.Default
+namespace A2Z.Optimizely.ContentSerializer.Internal.Default;
+
+public class LinkItemCollectionPropertyHandler : IPropertyHandler<LinkItemCollection>
 {
-    public class LinkItemCollectionPropertyHandler : IPropertyHandler<LinkItemCollection>
+    private readonly IUrlHelper _urlHelper;
+    private readonly IContentSerializerSettings _contentSerializerSettings;
+
+    public LinkItemCollectionPropertyHandler(IUrlHelper urlHelper, IContentSerializerSettings contentSerializerSettings)
     {
-        private readonly IUrlHelper _urlHelper;
-        private readonly IContentSerializerSettings _contentSerializerSettings;
+        _urlHelper = urlHelper ?? throw new ArgumentNullException(nameof(urlHelper));
+        _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
+    }
 
-        public LinkItemCollectionPropertyHandler(IUrlHelper urlHelper, IContentSerializerSettings contentSerializerSettings)
+    public object Handle(LinkItemCollection linkItemCollection, PropertyInfo propertyInfo, IContentData contentData)
+    {
+        return Handle(linkItemCollection, propertyInfo, contentData, _contentSerializerSettings);
+    }
+
+    public object Handle(LinkItemCollection linkItemCollection,
+        PropertyInfo property,
+        IContentData contentData,
+        IContentSerializerSettings settings)
+    {
+        if (linkItemCollection == null)
         {
-            _urlHelper = urlHelper ?? throw new ArgumentNullException(nameof(urlHelper));
-            _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
+            return null;
         }
+        var links = new List<LinkItem>();
 
-        public object Handle(LinkItemCollection linkItemCollection, PropertyInfo propertyInfo, IContentData contentData)
+        foreach (var link in linkItemCollection)
         {
-            return Handle(linkItemCollection, propertyInfo, contentData, _contentSerializerSettings);
-        }
-
-        public object Handle(LinkItemCollection linkItemCollection,
-            PropertyInfo property,
-            IContentData contentData,
-            IContentSerializerSettings settings)
-        {
-            if (linkItemCollection == null)
+            string prettyUrl = null;
+            if (link.ReferencedPermanentLinkIds.Any())
             {
-                return null;
+                var url = new Url(link.Href);
+                prettyUrl = _urlHelper.ContentUrl(url, settings.UrlSettings);
             }
-            var links = new List<LinkItem>();
-
-            foreach (var link in linkItemCollection)
+            links.Add(new LinkItem
             {
-                string prettyUrl = null;
-                if (link.ReferencedPermanentLinkIds.Any())
-                {
-                    var url = new Url(link.Href);
-                    prettyUrl = this._urlHelper.ContentUrl(url, settings.UrlSettings);
-                }
-                links.Add(new LinkItem
-                {
-                    Text = link.Text,
-                    Target = link.Target,
-                    Title = link.Title,
-                    Href = prettyUrl ?? link.Href
-                });
-            }
-
-            return links;
+                Text = link.Text,
+                Target = link.Target,
+                Title = link.Title,
+                Href = prettyUrl ?? link.Href
+            });
         }
+
+        return links;
     }
 }

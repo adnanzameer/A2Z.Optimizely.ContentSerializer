@@ -4,53 +4,52 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using A2Z.Optimizely.ContentSerializer.Attributes;
 using EPiServer;
 using EPiServer.Core;
-using A2Z.Optimizely.ContentSerializer.Attributes;
 
-namespace A2Z.Optimizely.ContentSerializer.Internal
+namespace A2Z.Optimizely.ContentSerializer.Internal;
+
+public class PropertyResolver : IPropertyResolver
 {
-    public class PropertyResolver : IPropertyResolver
+    private static ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> _cachedContentTypes;
+
+    public PropertyResolver()
     {
-        private static ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> _cachedContentTypes;
+        _cachedContentTypes = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
+    }
 
-        public PropertyResolver()
+    public IEnumerable<PropertyInfo> GetProperties(IContentData contentData)
+    {
+        var type = contentData.GetOriginalType();
+        if (_cachedContentTypes.ContainsKey(type))
         {
-            _cachedContentTypes = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
+            return _cachedContentTypes[type];
         }
 
-        public IEnumerable<PropertyInfo> GetProperties(IContentData contentData)
-        {
-            var type = contentData.GetOriginalType();
-            if (_cachedContentTypes.ContainsKey(type))
-            {
-                return _cachedContentTypes[type];
-            }
+        var properties = type.GetProperties().Where(ShouldBeIncluded).ToList();
+        _cachedContentTypes[type] = properties;
+        return properties;
+    }
 
-            var properties = type.GetProperties().Where(ShouldBeIncluded).ToList();
-            _cachedContentTypes[type] = properties;
-            return properties;
+    private static bool ShouldBeIncluded(PropertyInfo property)
+    {
+        var attributes = Attribute.GetCustomAttributes(property);
+
+        var ignoreAttribute = attributes.OfType<ContentSerializerIgnoreAttribute>().FirstOrDefault();
+
+        if (ignoreAttribute != null)
+        {
+            return false;
         }
 
-        private static bool ShouldBeIncluded(PropertyInfo property)
+        var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
+        if (displayAttribute != null)
         {
-            var attributes = Attribute.GetCustomAttributes(property);
-
-            var ignoreAttribute = attributes.OfType<ContentSerializerIgnoreAttribute>().FirstOrDefault();
-
-            if (ignoreAttribute != null)
-            {
-                return false;
-            }
-
-            var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
-            if (displayAttribute != null)
-            {
-                return true;
-            }
-
-            var includeAttribute = attributes.OfType<ContentSerializerIncludeAttribute>().FirstOrDefault();
-            return includeAttribute != null;
+            return true;
         }
+
+        var includeAttribute = attributes.OfType<ContentSerializerIncludeAttribute>().FirstOrDefault();
+        return includeAttribute != null;
     }
 }

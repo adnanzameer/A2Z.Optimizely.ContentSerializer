@@ -5,77 +5,76 @@ using EPiServer.Web;
 using EPiServer.Web.Mvc.Html;
 using Microsoft.AspNetCore.Mvc.Routing;
 
-namespace A2Z.Optimizely.ContentSerializer.Internal
+namespace A2Z.Optimizely.ContentSerializer.Internal;
+
+public class UrlHelperAdapter : IUrlHelper
 {
-    public class UrlHelperAdapter : IUrlHelper
+    private readonly UrlHelper _urlHelper;
+    private readonly ISiteDefinitionResolver _siteDefinitionResolver;
+    private readonly IRequestHostResolver _requestHostResolver;
+    private readonly IContentSerializerSettings _contentSerializerSettings;
+
+    public UrlHelperAdapter(
+        UrlHelper urlHelper,
+        ISiteDefinitionResolver siteDefinitionResolver,
+        IRequestHostResolver requestHostResolver,
+        IContentSerializerSettings contentSerializerSettings)
     {
-        private readonly UrlHelper _urlHelper;
-        private readonly ISiteDefinitionResolver _siteDefinitionResolver;
-        private readonly IRequestHostResolver _requestHostResolver;
-        private readonly IContentSerializerSettings _contentSerializerSettings;
+        _requestHostResolver = requestHostResolver ?? throw new ArgumentNullException(nameof(requestHostResolver));
+        _urlHelper = urlHelper ?? throw new ArgumentNullException(nameof(urlHelper));
+        _siteDefinitionResolver = siteDefinitionResolver ?? throw new ArgumentNullException(nameof(siteDefinitionResolver));
+        _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
+    }
 
-        public UrlHelperAdapter(
-            UrlHelper urlHelper,
-            ISiteDefinitionResolver siteDefinitionResolver,
-            IRequestHostResolver requestHostResolver,
-            IContentSerializerSettings contentSerializerSettings)
+    public string ContentUrl(Url url)
+    {
+        return Execute(url, _contentSerializerSettings.UrlSettings);
+    }
+
+    public string ContentUrl(Url url, IUrlSettings urlSettings)
+    {
+        return Execute(url, urlSettings);
+    }
+
+    public string ContentUrl(ContentReference contentReference)
+    {
+        return Execute(contentReference, _contentSerializerSettings.UrlSettings);
+    }
+
+    public string ContentUrl(ContentReference contentReference, IUrlSettings urlSettings)
+    {
+        return Execute(contentReference, urlSettings);
+    }
+
+    private string Execute(Url url, IUrlSettings urlSettings)
+    {
+        var prettyUrl = _urlHelper.ContentUrl(url);
+        if (urlSettings.UseAbsoluteUrls)
         {
-            _requestHostResolver = requestHostResolver ?? throw new ArgumentNullException(nameof(requestHostResolver));
-            _urlHelper = urlHelper ?? throw new ArgumentNullException(nameof(urlHelper));
-            _siteDefinitionResolver = siteDefinitionResolver ?? throw new ArgumentNullException(nameof(siteDefinitionResolver));
-            _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
+            return CreateAbsoluteUrl(prettyUrl, urlSettings.FallbackToWildcard);
         }
 
-        public string ContentUrl(Url url)
+        return prettyUrl;
+    }
+
+    private string Execute(ContentReference contentReference, IUrlSettings urlSettings)
+    {
+        var prettyUrl = _urlHelper.ContentUrl(contentReference);
+        if (urlSettings.UseAbsoluteUrls)
         {
-            return Execute(url, this._contentSerializerSettings.UrlSettings);
+            return CreateAbsoluteUrl(prettyUrl, urlSettings.FallbackToWildcard);
         }
 
-        public string ContentUrl(Url url, IUrlSettings urlSettings)
-        {
-            return Execute(url, urlSettings);
-        }
+        return prettyUrl;
+    }
 
-        public string ContentUrl(ContentReference contentReference)
-        {
-            return Execute(contentReference, this._contentSerializerSettings.UrlSettings);
-        }
-
-        public string ContentUrl(ContentReference contentReference, IUrlSettings urlSettings)
-        {
-            return Execute(contentReference, urlSettings);
-        }
-
-        private string Execute(Url url, IUrlSettings urlSettings)
-        {
-            var prettyUrl = this._urlHelper.ContentUrl(url);
-            if (urlSettings.UseAbsoluteUrls)
-            {
-                return CreateAbsoluteUrl(prettyUrl, urlSettings.FallbackToWildcard);
-            }
-
-            return prettyUrl;
-        }
-
-        private string Execute(ContentReference contentReference, IUrlSettings urlSettings)
-        {
-            var prettyUrl = this._urlHelper.ContentUrl(contentReference);
-            if (urlSettings.UseAbsoluteUrls)
-            {
-                return CreateAbsoluteUrl(prettyUrl, urlSettings.FallbackToWildcard);
-            }
-
-            return prettyUrl;
-        }
-
-        private string CreateAbsoluteUrl(string relativeUrl, bool fallbackToWildcard)
-        {
-            var siteDefinition = this._siteDefinitionResolver.GetByHostname(
-                this._requestHostResolver.HostName,
-                fallbackToWildcard
-            );
-            var uri = new Uri(siteDefinition.SiteUrl, relativeUrl);
-            return uri.AbsoluteUri;
-        }
+    private string CreateAbsoluteUrl(string relativeUrl, bool fallbackToWildcard)
+    {
+        var siteDefinition = _siteDefinitionResolver.GetByHostname(
+            _requestHostResolver.HostName,
+            fallbackToWildcard
+        );
+        var uri = new Uri(siteDefinition.SiteUrl, relativeUrl);
+        return uri.AbsoluteUri;
     }
 }

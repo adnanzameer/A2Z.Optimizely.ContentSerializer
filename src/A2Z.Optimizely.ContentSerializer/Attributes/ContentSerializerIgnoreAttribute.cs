@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace A2Z.Optimizely.ContentSerializer.Attributes
+namespace A2Z.Optimizely.ContentSerializer.Attributes;
+
+[AttributeUsage(AttributeTargets.Property)]
+public class ContentSerializerIgnoreAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class ContentSerializerIgnoreAttribute : Attribute
-    {
-    }
 }

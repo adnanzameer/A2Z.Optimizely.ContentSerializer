@@ -2,10 +2,9 @@
 using System.Reflection;
 using EPiServer.Core;
 
-namespace A2Z.Optimizely.ContentSerializer
+namespace A2Z.Optimizely.ContentSerializer;
+
+public interface IPropertyResolver
 {
-    public interface IPropertyResolver
-    {
-        IEnumerable<PropertyInfo> GetProperties(IContentData contentData);
-    }
+    IEnumerable<PropertyInfo> GetProperties(IContentData contentData);
 }

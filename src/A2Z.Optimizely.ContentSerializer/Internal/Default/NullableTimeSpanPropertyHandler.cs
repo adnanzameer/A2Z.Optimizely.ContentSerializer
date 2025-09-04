@@ -2,32 +2,31 @@
 using System.Reflection;
 using EPiServer.Core;
 
-namespace A2Z.Optimizely.ContentSerializer.Internal.Default
+namespace A2Z.Optimizely.ContentSerializer.Internal.Default;
+
+public class NullableTimeSpanPropertyHandler : IPropertyHandler<TimeSpan?>
 {
-    public class NullableTimeSpanPropertyHandler : IPropertyHandler<TimeSpan?>
+    private readonly IContentSerializerSettings _contentSerializerSettings;
+
+    public NullableTimeSpanPropertyHandler(IContentSerializerSettings contentSerializerSettings)
     {
-        private readonly IContentSerializerSettings _contentSerializerSettings;
+        _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
+    }
 
-        public NullableTimeSpanPropertyHandler(IContentSerializerSettings contentSerializerSettings)
-        {
-            _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
-        }
+    public object Handle(
+        TimeSpan? value,
+        PropertyInfo property,
+        IContentData contentData)
+    {
+        return Handle(value, property, contentData, _contentSerializerSettings);
+    }
 
-        public object Handle(
-            TimeSpan? value,
-            PropertyInfo property,
-            IContentData contentData)
-        {
-            return Handle(value, property, contentData, _contentSerializerSettings);
-        }
-
-        public object Handle(
-            TimeSpan? value,
-            PropertyInfo property,
-            IContentData contentData,
-            IContentSerializerSettings settings)
-        {
-            return value?.ToString();
-        }
+    public object Handle(
+        TimeSpan? value,
+        PropertyInfo property,
+        IContentData contentData,
+        IContentSerializerSettings settings)
+    {
+        return value?.ToString();
     }
 }

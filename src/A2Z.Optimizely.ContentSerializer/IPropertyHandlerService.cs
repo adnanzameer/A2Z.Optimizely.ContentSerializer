@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
 
-namespace A2Z.Optimizely.ContentSerializer
+namespace A2Z.Optimizely.ContentSerializer;
+
+public interface IPropertyHandlerService
 {
-    public interface IPropertyHandlerService
-    {
-        object GetPropertyHandler(PropertyInfo property);
-    }
+    object GetPropertyHandler(PropertyInfo property);
 }

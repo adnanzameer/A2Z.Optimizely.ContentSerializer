@@ -2,10 +2,9 @@
 using EPiServer.Core;
 using EPiServer.Shell.ObjectEditing;
 
-namespace A2Z.Optimizely.ContentSerializer.Internal
+namespace A2Z.Optimizely.ContentSerializer.Internal;
+
+public interface ISelectStrategy
 {
-    public interface ISelectStrategy
-    {
-        object Execute(PropertyInfo property, IContentData contentData, ISelectionFactory selectionFactory);
-    }
+    object Execute(PropertyInfo property, IContentData contentData, ISelectionFactory selectionFactory);
 }

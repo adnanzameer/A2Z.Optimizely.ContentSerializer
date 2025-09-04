@@ -2,29 +2,28 @@
 using System.Reflection;
 using EPiServer.Core;
 
-namespace A2Z.Optimizely.ContentSerializer.Internal.Default
+namespace A2Z.Optimizely.ContentSerializer.Internal.Default;
+
+public class BoolPropertyHandler : IPropertyHandler<bool>
 {
-    public class BoolPropertyHandler : IPropertyHandler<bool>
+    private readonly IContentSerializerSettings _contentSerializerSettings;
+
+    public BoolPropertyHandler(IContentSerializerSettings contentSerializerSettings)
     {
-        private readonly IContentSerializerSettings _contentSerializerSettings;
+        _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
+    }
 
-        public BoolPropertyHandler(IContentSerializerSettings contentSerializerSettings)
-        {
-            _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
-        }
+    public object Handle(bool value, PropertyInfo property, IContentData contentData)
+    {
+        return Handle(value, property, contentData, _contentSerializerSettings);
+    }
 
-        public object Handle(bool value, PropertyInfo property, IContentData contentData)
-        {
-            return Handle(value, property, contentData, _contentSerializerSettings);
-        }
-
-        public object Handle(
-            bool value,
-            PropertyInfo property,
-            IContentData contentData,
-            IContentSerializerSettings settings)
-        {
-            return value;
-        }
+    public object Handle(
+        bool value,
+        PropertyInfo property,
+        IContentData contentData,
+        IContentSerializerSettings settings)
+    {
+        return value;
     }
 }

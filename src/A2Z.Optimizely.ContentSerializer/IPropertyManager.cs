@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using EPiServer.Core;
 
-namespace A2Z.Optimizely.ContentSerializer
+namespace A2Z.Optimizely.ContentSerializer;
+
+public interface IPropertyManager
 {
-    public interface IPropertyManager
-    {
-        Dictionary<string, object> GetStructuredData(
-            IContentData contentData,
-            IContentSerializerSettings contentSerializerSettings);
-    }
+    Dictionary<string, object> GetStructuredData(
+        IContentData contentData,
+        IContentSerializerSettings contentSerializerSettings);
 }

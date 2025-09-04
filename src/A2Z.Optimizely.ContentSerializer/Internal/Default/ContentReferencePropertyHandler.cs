@@ -2,43 +2,42 @@
 using System.Reflection;
 using EPiServer.Core;
 
-namespace A2Z.Optimizely.ContentSerializer.Internal.Default
+namespace A2Z.Optimizely.ContentSerializer.Internal.Default;
+
+public class ContentReferencePropertyHandler : IPropertyHandler<ContentReference>
 {
-    public class ContentReferencePropertyHandler : IPropertyHandler<ContentReference>
+    private readonly IUrlHelper _urlHelper;
+    private readonly IContentSerializerSettings _contentSerializerSettings;
+
+    public ContentReferencePropertyHandler(IUrlHelper urlHelper, IContentSerializerSettings contentSerializerSettings)
     {
-        private readonly IUrlHelper _urlHelper;
-        private readonly IContentSerializerSettings _contentSerializerSettings;
+        _urlHelper = urlHelper;
+        _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
+    }
 
-        public ContentReferencePropertyHandler(IUrlHelper urlHelper, IContentSerializerSettings contentSerializerSettings)
+    public object Handle(ContentReference contentReference, PropertyInfo propertyInfo, IContentData contentData)
+    {
+        return Handle(contentReference, propertyInfo, contentData, _contentSerializerSettings);
+    }
+
+    public object Handle(
+        ContentReference contentReference,
+        PropertyInfo property,
+        IContentData contentData,
+        IContentSerializerSettings settings)
+    {
+        if (contentReference == null || contentReference == ContentReference.EmptyReference)
         {
-            _urlHelper = urlHelper;
-            _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
+            return null;
         }
 
-        public object Handle(ContentReference contentReference, PropertyInfo propertyInfo, IContentData contentData)
+        var url = new Uri(_urlHelper.ContentUrl(contentReference, settings.UrlSettings));
+
+        if (settings.UrlSettings.UseAbsoluteUrls && url.IsAbsoluteUri)
         {
-            return Handle(contentReference, propertyInfo, contentData, _contentSerializerSettings);
+            return url.AbsoluteUri;
         }
 
-        public object Handle(
-            ContentReference contentReference,
-            PropertyInfo property,
-            IContentData contentData,
-            IContentSerializerSettings settings)
-        {
-            if (contentReference == null || contentReference == ContentReference.EmptyReference)
-            {
-                return null;
-            }
-
-            var url = new Uri(this._urlHelper.ContentUrl(contentReference, settings.UrlSettings));
-
-            if (settings.UrlSettings.UseAbsoluteUrls && url.IsAbsoluteUri)
-            {
-                return url.AbsoluteUri;
-            }
-
-            return url.PathAndQuery;
-        }
+        return url.PathAndQuery;
     }
 }
