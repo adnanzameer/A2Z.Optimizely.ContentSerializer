@@ -10,7 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Test framework -->
+	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+	<!-- Test framework -->
     <PackageReference Include="xunit" Version="2.8.*" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.*">
       <PrivateAssets>all</PrivateAssets>
@@ -32,9 +33,4 @@
   <ItemGroup>
     <ProjectReference Include="..\A2Z.Optimizely.ContentSerializer\A2Z.Optimizely.ContentSerializer.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
 </Project>

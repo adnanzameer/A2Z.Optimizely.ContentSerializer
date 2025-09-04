@@ -36,31 +36,39 @@ namespace A2Z.Optimizely.ContentSerializer.Tests
         [Fact]
         public void GivenStringProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<string>), out var _).Returns(x =>
-            {
-                var selectStrategy = new DefaultSelectStrategy();
-                x[1] = new StringPropertyHandler(selectStrategy, selectStrategy, _contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
+            // Arrange
+            var selectStrategy = new DefaultSelectStrategy();
+            var stringHandler = new StringPropertyHandler(selectStrategy, selectStrategy, _contentSerializerSettings);
 
-            var result = this._sut.GetStructuredData(_page, this._contentSerializerSettings);
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<string>))
+                .Returns(stringHandler);
 
-            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.Heading)) && x.Value.Equals(_page.Heading));
+            // Register this fake provider into the CMS service locator scope
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
+            // Act
+            var result = _sut.GetStructuredData(_page, _contentSerializerSettings);
+
+            // Assert
+            result.ShouldContain(x =>
+                x.Key.Equals(nameof(StandardPage.Heading)) &&
+                x.Value.Equals(_page.Heading));
         }
+
 
         [Fact]
         public void GivenIntProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<int>), out var _).Returns(x =>
-            {
-                x[1] = new IntPropertyHandler(_contentSerializerSettings);
-                return true;
-            });
+            var selectStrategy = new DefaultSelectStrategy();
+            var stringHandler = new StringPropertyHandler(selectStrategy, selectStrategy, _contentSerializerSettings);
 
-            ////ServiceLocator.SetLocator(serviceLocator);
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            var intHandler = new IntPropertyHandler(_contentSerializerSettings);
+            serviceProvider.GetService(typeof(IPropertyHandler<int>))
+                .Returns(intHandler);
+            // Register this fake provider into the CMS service locator scope
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
 
             var result = this._sut.GetStructuredData(_page, this._contentSerializerSettings);
 
@@ -70,240 +78,316 @@ namespace A2Z.Optimizely.ContentSerializer.Tests
         [Fact]
         public void GivenDoubleProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<double>), out var _).Returns(x =>
-            {
-                x[1] = new DoublePropertyHandler(_contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
+            // Arrange
+            var doubleHandler = new DoublePropertyHandler(_contentSerializerSettings);
 
-            var result = this._sut.GetStructuredData(_page, this._contentSerializerSettings);
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<double>))
+                .Returns(doubleHandler);
 
-            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.Degrees)) && x.Value.Equals(_page.Degrees));
+            // Build a service locator substitute for APIs still pulling ServiceLocator.Current
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
+            // Act
+            var result = _sut.GetStructuredData(_page, _contentSerializerSettings);
+
+            // Assert
+            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.Degrees)) &&
+                                      x.Value.Equals(_page.Degrees));
         }
 
         [Fact]
         public void GivenBoolProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<bool>), out var _).Returns(x =>
-            {
-                x[1] = new BoolPropertyHandler(_contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
+            // Arrange
+            var boolHandler = new BoolPropertyHandler(_contentSerializerSettings);
+
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<bool>))
+                .Returns(boolHandler);
+
+            // Fake ServiceLocator only if your _sut resolves handlers that way
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
             var page = new StandardPageBuilder().WithPrivate(true).Build();
 
-            var result = this._sut.GetStructuredData(page, this._contentSerializerSettings);
+            // Act
+            var result = _sut.GetStructuredData(page, _contentSerializerSettings);
 
-            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.Private)) && x.Value.Equals(page.Private));
+            // Assert
+            result.ShouldContain(x =>
+                x.Key.Equals(nameof(StandardPage.Private)) &&
+                x.Value.Equals(page.Private));
         }
+
 
         [Fact]
         public void GivenDateTimeProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<DateTime>), out var _).Returns(x =>
-            {
-                x[1] = new DateTimePropertyHandler(_contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
-            var expectedStartingDate = new DateTime(3000, 1,1);
+            // Arrange
+            var dateTimeHandler = new DateTimePropertyHandler(_contentSerializerSettings);
+
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<DateTime>))
+                           .Returns(dateTimeHandler);
+
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
+            var expectedStartingDate = new DateTime(3000, 1, 1);
             var page = new StandardPageBuilder().WithStarting(expectedStartingDate).Build();
 
-            var result = this._sut.GetStructuredData(page, this._contentSerializerSettings);
+            // Act
+            var result = _sut.GetStructuredData(page, _contentSerializerSettings);
 
-            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.Starting)) && x.Value.Equals(page.Starting));
+            // Assert
+            result.ShouldContain(x =>
+                x.Key.Equals(nameof(StandardPage.Starting)) &&
+                x.Value.Equals(page.Starting));
         }
 
         [Fact]
         public void GivenContentReferenceProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
+            // Arrange
             var contentReference = new ContentReference(2000);
             var page = new StandardPageBuilder().WithContentReference(contentReference).Build();
-            var serviceLocator = Substitute.For<IServiceLocator>();
+
             var urlHelper = Substitute.For<IUrlHelper>();
             var contentReferencePageUrl = "https://josefottosson.se/";
-            urlHelper.ContentUrl(contentReference, Arg.Any<IUrlSettings>()).Returns(contentReferencePageUrl);
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<ContentReference>), out var _).Returns(x =>
-            {
-                x[1] = new ContentReferencePropertyHandler(urlHelper, this._contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
+            urlHelper.ContentUrl(contentReference, Arg.Any<IUrlSettings>())
+                     .Returns(contentReferencePageUrl);
 
-            var result = this._sut.GetStructuredData(page, this._contentSerializerSettings);
+            var contentReferenceHandler = new ContentReferencePropertyHandler(urlHelper, _contentSerializerSettings);
 
-            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.ContentReference)) && x.Value.Equals(contentReferencePageUrl));
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<ContentReference>))
+                           .Returns(contentReferenceHandler);
+
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
+            // Act
+            var result = _sut.GetStructuredData(page, _contentSerializerSettings);
+
+            // Assert
+            result.ShouldContain(x =>
+                x.Key.Equals(nameof(StandardPage.ContentReference)) &&
+                x.Value.Equals(contentReferencePageUrl));
         }
 
         [Fact]
         public void GivenPageReferenceProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
+            // Arrange
             var pageReference = new PageReference(3000);
             var page = new StandardPageBuilder().WithPageReference(pageReference).Build();
-            var serviceLocator = Substitute.For<IServiceLocator>();
+
             var urlHelper = Substitute.For<IUrlHelper>();
             var pageReferenceUrl = "https://josefottosson.se/";
-            var contentReferencePropertyHandler = new ContentReferencePropertyHandler(urlHelper, this._contentSerializerSettings);
-            urlHelper.ContentUrl(pageReference, Arg.Any<IUrlSettings>()).Returns(pageReferenceUrl);
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<PageReference>), out var _).Returns(x =>
-            {
-                x[1] = new PageReferencePropertyHandler(contentReferencePropertyHandler, _contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
+            urlHelper.ContentUrl(pageReference, Arg.Any<IUrlSettings>())
+                     .Returns(pageReferenceUrl);
 
-            var result = this._sut.GetStructuredData(page, this._contentSerializerSettings);
+            var contentReferenceHandler = new ContentReferencePropertyHandler(urlHelper, _contentSerializerSettings);
+            var pageReferenceHandler = new PageReferencePropertyHandler(contentReferenceHandler, _contentSerializerSettings);
 
-            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.PageReference)) && x.Value.Equals(pageReferenceUrl));
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<PageReference>))
+                           .Returns(pageReferenceHandler);
+
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
+            // Act
+            var result = _sut.GetStructuredData(page, _contentSerializerSettings);
+
+            // Assert
+            result.ShouldContain(x =>
+                x.Key.Equals(nameof(StandardPage.PageReference)) &&
+                x.Value.Equals(pageReferenceUrl));
         }
+
 
         [Fact]
         public void GivenContentAreaProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
+            // Arrange
             var contentArea = CreateContentArea();
             var page = new StandardPageBuilder().WithMainContentArea(contentArea).Build();
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<ContentArea>), out var _).Returns(x =>
-            {
-                x[1] = new ContentAreaPropertyHandler(this._contentLoader, this._sut, this._contentSerializerSettings);
-                return true;
-            });
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<string>), out var _).Returns(x =>
-            {
-                var selectStrategy = new DefaultSelectStrategy();
-                x[1] = new StringPropertyHandler(selectStrategy, selectStrategy, _contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
 
-            var result = this._sut.GetStructuredData(page, this._contentSerializerSettings);
+            var contentAreaHandler = new ContentAreaPropertyHandler(_contentLoader, _sut, _contentSerializerSettings);
+            var selectStrategy = new DefaultSelectStrategy();
+            var stringHandler = new StringPropertyHandler(selectStrategy, selectStrategy, _contentSerializerSettings);
 
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<ContentArea>))
+                .Returns(contentAreaHandler);
+            serviceProvider.GetService(typeof(IPropertyHandler<string>))
+                .Returns(stringHandler);
+
+            // Fake ServiceLocator only if _sut resolves via ServiceLocator
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
+            // Act
+            var result = _sut.GetStructuredData(page, _contentSerializerSettings);
+
+            // Assert
             result.ShouldContainKey(nameof(StandardPage.MainContentArea));
         }
+
 
         [Fact]
         public void GivenStringArrayProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
-            var strings = new[] {"any", "value"};
+            // Arrange
+            var strings = new[] { "any", "value" };
             var page = new StandardPageBuilder().WithStrings(strings).Build();
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<IEnumerable<string>>), out var _).Returns(x =>
-            {
-                x[1] = new StringListPropertyHandler(_contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
 
-            var result = this._sut.GetStructuredData(page, this._contentSerializerSettings);
+            var stringListHandler = new StringListPropertyHandler(_contentSerializerSettings);
 
-            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.Strings)) && x.Value.Equals(strings));
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<IEnumerable<string>>))
+                .Returns(stringListHandler);
+
+            // Only needed if _sut resolves via ServiceLocator
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
+            // Act
+            var result = _sut.GetStructuredData(page, _contentSerializerSettings);
+
+            // Assert
+            result.ShouldContain(x =>
+                x.Key.Equals(nameof(StandardPage.Strings)) &&
+                x.Value.Equals(strings));
         }
+
 
         [Fact]
         public void GivenStringListProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
+            // Arrange
             var strings = new List<string> { "any", "value" };
             var page = new StandardPageBuilder().WithStrings(strings).Build();
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<IEnumerable<string>>), out var _).Returns(x =>
-            {
-                x[1] = new StringListPropertyHandler(_contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
 
-            var result = this._sut.GetStructuredData(page, this._contentSerializerSettings);
+            var stringListHandler = new StringListPropertyHandler(_contentSerializerSettings);
 
-            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.Strings)) && x.Value.Equals(strings));
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<IEnumerable<string>>))
+                .Returns(stringListHandler);
+
+            // Needed only if _sut resolves via ServiceLocator internally
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
+            // Act
+            var result = _sut.GetStructuredData(page, _contentSerializerSettings);
+
+            // Assert
+            result.ShouldContain(x =>
+                x.Key.Equals(nameof(StandardPage.Strings)) &&
+                x.Value.Equals(strings));
         }
+
 
         [Fact]
         public void GivenIntListProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
+            // Arrange
             var ints = new List<int> { 1000, 2000 };
             var page = new StandardPageBuilder().WithInts(ints).Build();
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<IEnumerable<int>>), out var _).Returns(x =>
-            {
-                x[1] = new IntListPropertyHandler(_contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
 
-            var result = this._sut.GetStructuredData(page, this._contentSerializerSettings);
+            var intListHandler = new IntListPropertyHandler(_contentSerializerSettings);
 
-            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.Ints)) && x.Value.Equals(ints));
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<IEnumerable<int>>))
+                           .Returns(intListHandler);
+
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
+            // Act
+            var result = _sut.GetStructuredData(page, _contentSerializerSettings);
+
+            // Assert
+            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.Ints)) &&
+                                      x.Value.Equals(ints));
         }
 
         [Fact]
         public void GivenDoubleListProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
+            // Arrange
             var doubles = new List<double> { 1000, 2000.50 };
             var page = new StandardPageBuilder().WithDoubles(doubles).Build();
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<IEnumerable<double>>), out var _).Returns(x =>
-            {
-                x[1] = new DoubleListPropertyHandler(_contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
 
-            var result = this._sut.GetStructuredData(page, this._contentSerializerSettings);
+            var doubleListHandler = new DoubleListPropertyHandler(_contentSerializerSettings);
 
-            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.Doubles)) && x.Value.Equals(doubles));
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<IEnumerable<double>>))
+                           .Returns(doubleListHandler);
+
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
+            // Act
+            var result = _sut.GetStructuredData(page, _contentSerializerSettings);
+
+            // Assert
+            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.Doubles)) &&
+                                      x.Value.Equals(doubles));
         }
 
         [Fact]
         public void GivenDateTimeListProperty_WhenGetStructuredData_ThenReturnsCorrectValue()
         {
-            var dateTimes = new List<DateTime> { new DateTime(2000, 1, 12), new DateTime(3000, 1 ,20) };
+            // Arrange
+            var dateTimes = new List<DateTime> { new DateTime(2000, 1, 12), new DateTime(3000, 1, 20) };
             var page = new StandardPageBuilder().WithDateTimes(dateTimes).Build();
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<IEnumerable<DateTime>>), out var _).Returns(x =>
-            {
-                x[1] = new DateTimeListPropertyHandler(_contentSerializerSettings);
-                return true;
-            });
-            ////ServiceLocator.SetLocator(serviceLocator);
 
-            var result = this._sut.GetStructuredData(page, this._contentSerializerSettings);
+            var dateTimeListHandler = new DateTimeListPropertyHandler(_contentSerializerSettings);
 
-            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.DateTimes)) && x.Value.Equals(dateTimes));
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<IEnumerable<DateTime>>))
+                           .Returns(dateTimeListHandler);
+
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
+            // Act
+            var result = _sut.GetStructuredData(page, _contentSerializerSettings);
+
+            // Assert
+            result.ShouldContain(x => x.Key.Equals(nameof(StandardPage.DateTimes)) &&
+                                      x.Value.Equals(dateTimes));
         }
 
         [Fact]
         public void ShouldUsePassedInContentSerializerSettings()
         {
+            // Arrange
             var pageReference = new PageReference(3000);
             var page = new StandardPageBuilder().WithPageReference(pageReference).Build();
-            var serviceLocator = Substitute.For<IServiceLocator>();
+
             var urlHelper = Substitute.For<IUrlHelper>();
             var pageReferenceUrl = "https://josefottosson.se/some-path";
-            var contentReferencePropertyHandler = new ContentReferencePropertyHandler(urlHelper, this._contentSerializerSettings);
-            urlHelper.ContentUrl(pageReference, Arg.Any<IUrlSettings>()).Returns(pageReferenceUrl);
-            serviceLocator.TryGetExistingInstance(typeof(IPropertyHandler<PageReference>), out var _).Returns(x =>
-            {
-                x[1] = new PageReferencePropertyHandler(contentReferencePropertyHandler, _contentSerializerSettings);
-                return true;
-            });
-            //ServiceLocator.SetLocator(serviceLocator);
+            urlHelper.ContentUrl(pageReference, Arg.Any<IUrlSettings>())
+                     .Returns(pageReferenceUrl);
+
+            var contentReferenceHandler = new ContentReferencePropertyHandler(urlHelper, _contentSerializerSettings);
+            var pageReferenceHandler = new PageReferencePropertyHandler(contentReferenceHandler, _contentSerializerSettings);
+
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(IPropertyHandler<PageReference>))
+                           .Returns(pageReferenceHandler);
+
+            ServiceLocator.SetScopedServiceProvider(serviceProvider);
+
             var customContentSerializerSettings = new ContentSerializerSettings
             {
-                UrlSettings = new UrlSettings
-                {
-                    UseAbsoluteUrls = false
-                }
+                UrlSettings = new UrlSettings { UseAbsoluteUrls = false }
             };
 
-            var result = this._sut.GetStructuredData(page, customContentSerializerSettings);
+            // Act
+            var result = _sut.GetStructuredData(page, customContentSerializerSettings);
 
+            // Assert
             result.ShouldContainKey("PageReference");
             result["PageReference"].ShouldBe("/some-path");
         }
+
 
         private static void SetupContentLoader(IContentLoader contentLoader)
         {

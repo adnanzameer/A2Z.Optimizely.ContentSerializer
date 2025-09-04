@@ -1,6 +1,6 @@
 ﻿using EPiServer.Shell.ObjectEditing;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests
+namespace A2Z.Optimizely.ContentSerializer.Tests.Pages
 {
     public class SelectionFactory : ISelectionFactory
     {

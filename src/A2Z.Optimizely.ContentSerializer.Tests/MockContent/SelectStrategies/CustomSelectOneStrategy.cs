@@ -6,9 +6,9 @@ using A2Z.Optimizely.ContentSerializer.Internal;
 using A2Z.Optimizely.ContentSerializer.Internal.Default;
 using A2Z.Optimizely.ContentSerializer.Tests.Pages;
 
-namespace A2Z.Optimizely.ContentSerializer.Tests.SelectStrategies
+namespace A2Z.Optimizely.ContentSerializer.Tests.MockContent.SelectStrategies
 {
-    public class CustomSelectManyStrategy : ISelectManyStrategy
+    public class CustomSelectOneStrategy : ISelectOneStrategy
     {
         private static readonly IReadOnlyDictionary<Type, Dictionary<string, bool>> CustomProperties =
             new Dictionary<Type, Dictionary<string, bool>>
@@ -16,32 +16,31 @@ namespace A2Z.Optimizely.ContentSerializer.Tests.SelectStrategies
                 {
                     typeof(StringPropertyHandlerPage), new Dictionary<string, bool>
                     {
-                        {nameof(StringPropertyHandlerPage.SelectedOnlyMany), false},
-                        {nameof(StringPropertyHandlerPage.SelectedOnlyValueOnlyMany), true}
+                        {nameof(StringPropertyHandlerPage.SelectedOnlyOne), false},
+                        {nameof(StringPropertyHandlerPage.SelectedOnlyValueOnlyOne), true}
                     }
                 }
             };
 
-        private readonly ISelectManyStrategy _defaultSelectManyStrategy;
-
-        public CustomSelectManyStrategy()
+        private readonly ISelectOneStrategy _defaultSelectOneStrategy;
+        public CustomSelectOneStrategy()
         {
-            this._defaultSelectManyStrategy = new DefaultSelectStrategy();
+            _defaultSelectOneStrategy = new DefaultSelectStrategy();
         }
 
         public object Execute(PropertyInfo property, IContentData contentData, ISelectionFactory selectionFactory)
         {
-            var result = (IEnumerable<SelectOption>)this._defaultSelectManyStrategy.Execute(property, contentData, selectionFactory);
+            var result = (IEnumerable<SelectOption>)_defaultSelectOneStrategy.Execute(property, contentData, selectionFactory);
             var type = contentData.GetOriginalType();
             if (IsCustomContentType(type, property.Name))
             {
                 var onlyValue = CustomProperties[type][property.Name];
                 if (onlyValue)
                 {
-                    return result.Where(x => x.Selected).Select(x => x.Value);
+                    return result.FirstOrDefault(x => x.Selected)?.Value;
                 }
 
-                return result.Where(x => x.Selected);
+                return result.FirstOrDefault(x => x.Selected);
             }
 
             return result;
