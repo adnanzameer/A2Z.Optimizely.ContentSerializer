@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using EPiServer;
+using EPiServer.Core;
+using EPiServer.DataAbstraction;
+using EPiServer.Framework;
+using EPiServer.Framework.Initialization;
+using EPiServer.ServiceLocation;
+using EPiServer.SpecializedProperties;
+using Microsoft.Extensions.DependencyInjection;
+using A2Z.Optimizely.ContentSerializer.Internal.Default;
+using A2Z.Optimizely.ContentSerializer.Internal.Default.ValueListPropertyHandlers;
+using A2Z.Optimizely.ContentSerializer.Internal.Default.ValueTypePropertyHandlers;
+using StringPropertyHandler = A2Z.Optimizely.ContentSerializer.Internal.Default.StringPropertyHandler;
+
+namespace A2Z.Optimizely.ContentSerializer.Internal
+{
+    [InitializableModule]
+    [ModuleDependency(typeof(EPiServer.Web.InitializationModule))]
+    public class ContentSerializerInitalizationModule : IConfigurableModule
+    {
+        public void Uninitialize(InitializationEngine context)
+        {
+
+        }
+
+        public void ConfigureContainer(ServiceConfigurationContext context)
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            context.Services.AddSingleton<IContentSerializer, JsonContentSerializer>();
+            context.Services.AddSingleton<IPropertyManager, PropertyManager>();
+            context.Services.AddSingleton<IPropertyNameStrategy, PropertyNameStrategy>();
+            context.Services.AddSingleton<IPropertyResolver, PropertyResolver>();
+            context.Services.AddSingleton<IUrlHelper, UrlHelperAdapter>();
+            context.Services.AddSingleton<IContentJsonSerializer, JsonContentSerializer>();
+            context.Services.AddSingleton<IPropertyHandlerService, PropertyHandlerService>();
+            context.Services.AddSingleton<IContentSerializerSettings, ContentSerializerSettings>();
+
+            context.Services.AddSingleton<IPropertyHandler<int>, IntPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<bool>, BoolPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<double>, DoublePropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<DateTime>, DateTimePropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<ContentArea>, ContentAreaPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<ContentReference>, ContentReferencePropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<PageReference>, PageReferencePropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<IEnumerable<ContentReference>>, ContentReferenceListPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<LinkItemCollection>, LinkItemCollectionPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<PageType>, PageTypePropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<string>, StringPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<Url>, UrlPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<XhtmlString>, XhtmlStringPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<BlockData>, BlockDataPropertyHandler>();
+            
+            context.Services.AddSingleton<StringListPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<IEnumerable<string>>>(x => x.GetInstance<StringListPropertyHandler>());
+            context.Services.AddSingleton<IPropertyHandler<ICollection<string>>>(x => x.GetInstance<StringListPropertyHandler>());
+            context.Services.AddSingleton<IPropertyHandler<IList<string>>>(x => x.GetInstance<StringListPropertyHandler>());
+            context.Services.AddSingleton<IPropertyHandler<string[]>>(x => x.GetInstance<StringListPropertyHandler>());
+            context.Services.AddSingleton<IntListPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<IEnumerable<int>>>(x => x.GetInstance<IntListPropertyHandler>());
+            context.Services.AddSingleton<IPropertyHandler<ICollection<int>>>(x => x.GetInstance<IntListPropertyHandler>());
+            context.Services.AddSingleton<IPropertyHandler<IList<int>>>(x => x.GetInstance<IntListPropertyHandler>());
+            context.Services.AddSingleton<DateTimeListPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<IEnumerable<DateTime>>>(x => x.GetInstance<DateTimeListPropertyHandler>());
+            context.Services.AddSingleton<IPropertyHandler<ICollection<DateTime>>>(x => x.GetInstance<DateTimeListPropertyHandler>());
+            context.Services.AddSingleton<IPropertyHandler<IList<DateTime>>>(x => x.GetInstance<DateTimeListPropertyHandler>());
+            context.Services.AddSingleton<DoubleListPropertyHandler>();
+            context.Services.AddSingleton<IPropertyHandler<IEnumerable<double>>>(x => x.GetInstance<DoubleListPropertyHandler>());
+            context.Services.AddSingleton<IPropertyHandler<ICollection<double>>>(x => x.GetInstance<DoubleListPropertyHandler>());
+            context.Services.AddSingleton<IPropertyHandler<IList<double>>>(x => x.GetInstance<DoubleListPropertyHandler>());
+            context.Services.AddSingleton<IPropertyHandler<TimeSpan?>, NullableTimeSpanPropertyHandler>();
+
+            var defaultSelectStrategy = new DefaultSelectStrategy();
+            context.Services.AddSingleton<ISelectOneStrategy>(defaultSelectStrategy);
+            context.Services.AddSingleton<ISelectManyStrategy>(defaultSelectStrategy);
+
+            stopwatch.Stop();
+            Trace.WriteLine($"{nameof(ContentSerializerInitalizationModule)} took {stopwatch.ElapsedMilliseconds}ms");
+        }
+
+        public void Initialize(InitializationEngine context)
+        {
+
+        }
+    }
+}

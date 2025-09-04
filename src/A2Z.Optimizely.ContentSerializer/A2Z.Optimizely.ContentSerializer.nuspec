@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+	<id>A2Z.Optimizely.ContentSerializer</id>
+	<version>$version$</version>
+	<authors>Adnan Zameer</authors>
+	<description>A library that lets you serialize any ContentData object by simply calling .Serialize or .ToJson on it.</description>
+	<language>en</language>
+	<projectUrl>https://github.com/adnanzameer/A2Z.Optimizely.ContentSerializer</projectUrl>
+	<releaseNotes>
+	  Initial release.
+	</releaseNotes>
+	<tags>episerver json</tags>
+  </metadata>
+</package>
