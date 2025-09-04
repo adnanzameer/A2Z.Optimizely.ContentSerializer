@@ -3,7 +3,6 @@
 ✨ A modernized **Content Serializer for Optimizely CMS 12 (.NET Core)** ✨  
 
 [![.NET](https://img.shields.io/badge/.NET-6.0-purple.svg)](https://dotnet.microsoft.com/) 
-[![.NET](https://img.shields.io/badge/.NET-8.0-purple.svg)](https://dotnet.microsoft.com/) 
 [![Optimizely CMS](https://img.shields.io/badge/Optimizely-CMS%2012-blue.svg)](https://world.optimizely.com/) 
 [![NuGet](https://img.shields.io/nuget/v/A2Z.Optimizely.ContentSerializer.svg)](https://nuget.optimizely.com/packages/A2Z.Optimizely.ContentSerializer/)
 
