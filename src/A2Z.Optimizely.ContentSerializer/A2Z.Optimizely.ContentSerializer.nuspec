@@ -2,14 +2,18 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
 	<id>A2Z.Optimizely.ContentSerializer</id>
-	<version>$version$</version>
+	<version>1.0.0</version>
+	<iconUrl>https://raw.githubusercontent.com/adnanzameer/optimizely-orphaned-properties/master/OrphanedProperties/icon.png</iconUrl>
 	<authors>Adnan Zameer</authors>
 	<description>A library that lets you serialize any ContentData object by simply calling .Serialize or .ToJson on it.</description>
-	<language>en</language>
+	<releaseNotes>https://github.com/adnanzameer/optimizely-orphaned-properties/blob/master/CHANGELOG.md</releaseNotes>
 	<projectUrl>https://github.com/adnanzameer/A2Z.Optimizely.ContentSerializer</projectUrl>
-	<releaseNotes>
-	  Initial release.
-	</releaseNotes>
-	<tags>episerver json</tags>
+	<tags>episerver optimizely json serializer ContentSerializer</tags>
+	  <dependencies>
+		  <group targetFramework=".NETCoreApp,Version=v6.0">
+			  <dependency id="EPiServer.CMS" version="[12.0.2,13.0.0)" />
+			  <dependency id="EPiServer.Framework" version="[12.0.3,13.0.0)" />
+		  </group>
+	  </dependencies>
   </metadata>
 </package>
