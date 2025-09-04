@@ -23,8 +23,14 @@ This library is a **.NET Core / CMS 12** compatible fork of
 
 ## Serialize any ContentData object to JSON(or xml, or something else)
 
-### Installation
-Nuget: **Install-Package A2Z.Optimizely.ContentSerializer**
+### Installation 
+
+To install the A2Z.Optimizely.ContentSerializer, begin by adding the NuGet package using [Optimizely NuGet](https://nuget.optimizely.com/):
+
+`
+dotnet add package A2Z.Optimizely.ContentSerializer
+`
+
 #### *OR*
 Just check out the desired branch and add the A2Z.Optimizely.ContentSerializer project to your solution.
 

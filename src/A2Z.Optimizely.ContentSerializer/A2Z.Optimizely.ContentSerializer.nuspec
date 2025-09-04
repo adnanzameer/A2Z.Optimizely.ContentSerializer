@@ -9,7 +9,7 @@
 	<description>A library that lets you serialize any ContentData object by simply calling .Serialize or .ToJson on it.</description>
 	<releaseNotes>https://github.com/adnanzameer/A2Z.Optimizely.ContentSerializer/blob/master/CHANGELOG.md</releaseNotes>
 	<projectUrl>https://github.com/adnanzameer/A2Z.Optimizely.ContentSerializer</projectUrl>
-	<tags>episerver optimizely json serializer ContentSerializer</tags>
+	<tags>episerver optimizely json serializer ContentSerializer ContentData</tags>
 	<dependencies>
 	  <group targetFramework=".NETCoreApp,Version=v6.0">
 		<dependency id="EPiServer.CMS" version="[12.0.2,13.0.0)" />
